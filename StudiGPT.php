@@ -12,7 +12,7 @@ StudipAutoloader::addClassLookups([
 
 use Courseware\CoursewarePlugin;
 
-class CoursewareGPTBlockPlugin extends StudIPPlugin implements SystemPlugin, CoursewarePlugin
+class StudiGPT extends StudIPPlugin implements SystemPlugin, CoursewarePlugin
 {
     public function __construct()
     {
