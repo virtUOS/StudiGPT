@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 64 64" style="enable-background:new 0 0 64 64;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;}
+	.st1{fill:#28497C;}
+	.st2{fill:#EBEBEC; display: none;}
+</style>
+<rect y="0" class="st0" width="64" height="64"/>
+	<path class="st1" d="M32,4C16.5,4,4,16.5,4,32h8.3c0-10.9,8.8-19.7,19.7-19.6c10.9,0,19.7,8.8,19.6,19.7c0,10.9-8.8,19.6-19.7,19.6
+	V60c15.5,0,28-12.5,28-28S47.5,4,32,4z">
+		<animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="2s" repeatCount="indefinite" />
+	</path>
+	<path class="st1" d="M42.5,32c0-5.8-4.7-10.5-10.5-10.5c-5.8,0-10.5,4.7-10.5,10.5c0,5.8,4.7,10.5,10.5,10.5
+	C37.8,42.6,42.5,37.8,42.5,32C42.5,32,42.5,32,42.5,32z"/>
+	<path class="st2" d="M42.5,32L42.5,32c0,5.8-4.7,10.5-10.5,10.5c-5.8,0-10.5-4.7-10.5-10.5c0-5.8,4.7-10.5,10.5-10.5c0,0,0,0,0,0
+	v-9.2h0c-10.9,0-19.7,8.8-19.7,19.7S21.1,51.7,32,51.7c10.9,0,19.7-8.8,19.7-19.7H42.5z">
+			<animateTransform attributeName="transform" type="rotate" from="360 32 32" to="0 32 32" dur="1s" repeatCount="indefinite" />
+	</path>
+</svg>

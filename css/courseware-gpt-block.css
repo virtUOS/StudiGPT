@@ -1,0 +1,120 @@
+.cw-block-gpt .cw-block-content {
+    display: flex;
+    flex-flow: column;
+    border: solid thin #d0d7e3;
+    min-height: 140px;
+}
+
+.cw-gpt-edit-form textarea {
+    resize: both;
+}
+
+.cw-gpt-privacy {
+    border: solid 1px #d0d7e3;
+    padding: 0;
+    margin-top: 1.5ex;
+}
+
+.cw-gpt-privacy header {
+    display: flex;
+}
+
+.cw-gpt-privacy img {
+    margin-right: 5px;
+}
+
+.cw-gpt-privacy > p {
+    padding: 10px;
+}
+
+.cw-gpt-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.cw-gpt-buttons select, .cw-gpt-buttons button {
+    margin: 0.8em 0.6em 0.8em 0;
+}
+
+.cw-gpt-consent, .cw-gpt-question, .cw-gpt-feedback {
+    margin: 10px;
+}
+
+.cw-gpt-consent p {
+    font-weight: bold;
+}
+
+.cw-gpt-section {
+    margin-bottom: 10px;
+}
+
+.cw-gpt-section-question, .cw-gpt-section-answer, .cw-gpt-answer-input {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.cw-gpt-section-feedback, .cw-gpt-section-solution {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.cw-gpt-section-heading {
+    display: flex;
+    align-items: center;
+    color: var(--base-color, #28497c);
+    font-weight: 700;
+    gap: 5px;
+}
+
+.cw-gpt-answer-input textarea {
+    border-radius: 5px;
+}
+
+.cw-gpt-loading-indicator {
+    flex-grow: 1;
+    width: 100%;
+    background-image: url("../images/loading-indicator-fast.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 32px;
+    height: 32px;
+}
+
+/* User feedback */
+.cw-gpt-user-feedback {
+    align-self: flex-end;
+    display: flex;
+    gap: 5px;
+}
+
+.cw-gpt-user-feedback div {
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    background-size: 24px;
+    height: 24px;
+    width: 24px;
+}
+
+.cw-gpt-user-feedback-like {
+    background-image: url("../images/thumbs-up.svg");
+    opacity: 0.5;
+}
+
+.cw-gpt-user-feedback-like-selected {
+    background-image: url("../images/thumbs-up-selected.svg");
+    opacity: 1;
+}
+
+.cw-gpt-user-feedback-dislike {
+    background-image: url("../images/thumbs-down.svg");
+    opacity: 0.5;
+}
+
+.cw-gpt-user-feedback-dislike-selected {
+    background-image: url("../images/thumbs-down-selected.svg");
+    opacity: 1;
+}

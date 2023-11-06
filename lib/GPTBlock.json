@@ -1,0 +1,29 @@
+{
+    "title": "Payload schema of CoursewareGPTBlock\\GPTBlock",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string"
+        },
+        "summary": {
+            "type": "string"
+        },
+        "additional_instructions": {
+            "type": "string"
+        },
+        "language": {
+            "type": "string"
+        },
+        "difficulty": {
+            "type": "string"
+        },
+        "use_block_contents": {
+            "type": "boolean"
+        },
+        "api_key": {
+            "type": "string"
+        }
+    },
+    "required": ["summary"],
+    "additionalProperties": true
+}
