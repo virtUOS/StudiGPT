@@ -82,39 +82,3 @@
     background-size: 32px;
     height: 32px;
 }
-
-/* User feedback */
-.cw-gpt-user-feedback {
-    align-self: flex-end;
-    display: flex;
-    gap: 5px;
-}
-
-.cw-gpt-user-feedback div {
-    background-repeat: no-repeat;
-    background-position: center;
-    cursor: pointer;
-    background-size: 24px;
-    height: 24px;
-    width: 24px;
-}
-
-.cw-gpt-user-feedback-like {
-    background-image: url("../images/thumbs-up.svg");
-    opacity: 0.5;
-}
-
-.cw-gpt-user-feedback-like-selected {
-    background-image: url("../images/thumbs-up-selected.svg");
-    opacity: 1;
-}
-
-.cw-gpt-user-feedback-dislike {
-    background-image: url("../images/thumbs-down.svg");
-    opacity: 0.5;
-}
-
-.cw-gpt-user-feedback-dislike-selected {
-    background-image: url("../images/thumbs-down-selected.svg");
-    opacity: 1;
-}

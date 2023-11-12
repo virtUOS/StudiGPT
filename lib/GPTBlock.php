@@ -29,7 +29,6 @@ class GPTBlock extends BlockType
             'title' => '',
             'summary' => '',
             'additional_instructions' => '',
-            'language' => 'de_DE',
             'difficulty' => 'easy',
             'use_block_contents' => false,
         ];

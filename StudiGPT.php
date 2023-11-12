@@ -3,11 +3,7 @@
 require_once 'lib/gpt_common.inc.php';
 
 StudipAutoloader::addClassLookups([
-    'CoursewareGPTBlock\GPTBlock'  => __DIR__ . '/lib/GPTBlock.php',
-    'CoursewareGPTBlock\GPTFeedback'  => __DIR__ . '/models/GPTFeedback.php',
-    'CoursewareGPTBlock\GPTQuestion'  => __DIR__ . '/models/GPTQuestion.php',
-    'CoursewareGPTBlock\GPTUserAnswer'  => __DIR__ . '/models/GPTUserAnswer.php',
-    'CoursewareGPTBlock\GPTUserFeedback'  => __DIR__ . '/models/GPTUserFeedback.php'
+    'CoursewareGPTBlock\GPTBlock'  => __DIR__ . '/lib/GPTBlock.php'
 ]);
 
 use Courseware\CoursewarePlugin;

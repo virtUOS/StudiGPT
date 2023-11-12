@@ -11,9 +11,6 @@
         "additional_instructions": {
             "type": "string"
         },
-        "language": {
-            "type": "string"
-        },
         "difficulty": {
             "type": "string"
         },
