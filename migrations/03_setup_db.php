@@ -16,6 +16,7 @@ class SetupDb extends Migration
                 `question` text NOT NULL,
                 `solution` text NOT NULL,
                 `difficulty` varchar(64) NOT NULL,
+                `additional_instructions` text,
                 `language` varchar(64) NOT NULL,
                 `prompt` text NOT NULL,
                 `click_date` int(11) NOT NULL,

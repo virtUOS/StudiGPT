@@ -81,16 +81,17 @@ class ApiController extends PluginController
 
         // Store generated question in database
         $question_object = \CoursewareGPTBlock\GPTQuestion::create([
-            'question'          => $question,
-            'solution'          => $solution,
-            'difficulty'        => $difficulty,
-            'language'          => $language,
-            'prompt'            => $generate_question_prompt,
-            'click_date'        => $click_date,
-            'generated_date'    => time(),
-            'creator_id'        => $user->id,
-            'block_id'          => $block_id,
-            'course_id'         => isset($course) ? $course->id : null,
+            'question'                  => $question,
+            'solution'                  => $solution,
+            'difficulty'                => $difficulty,
+            'additional_instructions'   => $additional_instructions,
+            'language'                  => $language,
+            'prompt'                    => $generate_question_prompt,
+            'click_date'                => $click_date,
+            'generated_date'            => time(),
+            'creator_id'                => $user->id,
+            'block_id'                  => $block_id,
+            'course_id'                 => isset($course) ? $course->id : null,
         ]);
 
         $this->render_json([
