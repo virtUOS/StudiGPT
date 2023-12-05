@@ -67,7 +67,7 @@ class ApiController extends PluginController
         $data = $this->requestOpenai($generate_question_prompt, $block);
 
         // Process OpenAi response
-        $text = $data['choices'][0]['text'];
+        $text = $data['choices'][0]['message']['content'];
         $text_lines = array_map('trim', explode("\n", $text));
 
         // Get the last question and answer
@@ -145,7 +145,7 @@ class ApiController extends PluginController
         $data = $this->requestOpenai($generate_feedback_prompt, $block);
 
         // Process OpenAi response
-        $feedback = $data['choices'][0]['text'];
+        $feedback = $data['choices'][0]['message']['content'];
 
         // Store feedback
         $feedback_object = \CoursewareGPTBlock\GPTFeedback::create([
@@ -178,7 +178,7 @@ class ApiController extends PluginController
         }
 
         // Send request to OpenAI
-        $ch = curl_init('https://api.openai.com/v1/completions');
+        $ch = curl_init('https://api.openai.com/v1/chat/completions');
 
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -189,9 +189,14 @@ class ApiController extends PluginController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $post_body = json_encode([
-            'model' => 'text-davinci-003',
-            'prompt' => $prompt,
-            'max_tokens' => 150,
+            'model' => 'gpt-3.5-turbo-1106',
+            'messages' => [
+                [
+                    'role' => 'user',
+                    'content' => $prompt,
+                ],
+            ],
+            'max_tokens' => 200,
             'temperature' => 0.9,
             'top_p' => 1,
             'frequency_penalty' => 0,
