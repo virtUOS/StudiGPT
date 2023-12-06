@@ -1,0 +1,12 @@
+{
+    "name": "virtuos/studigpt",
+    "description": "Courseware block for creating exercises on the content of a page using GPT",
+    "config": {
+        "platform": {
+            "php": "7.2.5"
+        }
+    },
+    "require": {
+        "smalot/pdfparser": "^2.7"
+    }
+}

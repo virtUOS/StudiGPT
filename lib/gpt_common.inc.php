@@ -65,6 +65,9 @@ function getCoursewareSummary(\Courseware\Block $site_block) {
     // Add site title
     $summary .= $structural_element->title . "\n\n";
 
+    // PDF parser
+    $pdf_parser = new \Smalot\PdfParser\Parser();
+
     // Iterate over all containers
     foreach ($structural_element->containers as $container) {
         foreach ($container->blocks as $block) {
@@ -101,7 +104,15 @@ function getCoursewareSummary(\Courseware\Block $site_block) {
                 //    $block_summary .= $payload['type'] . "\n" . $payload['description'] ?? '';
                 //    break;
                 case \Courseware\BlockTypes\Document::getType():
-                    // TODO: Process pdf file
+                    if (isset($payload['doc_type']) && $payload['doc_type'] == 'pdf') {
+                        if (!$payload['file_id']) {
+                            break;
+                        }
+
+                        if ($fileRef = \FileRef::find($payload['file_id'])) {
+                            $block_summary .= $pdf_parser->parseFile($fileRef->file->getPath())->getText();
+                        }
+                    }
                     break;
             }
 
