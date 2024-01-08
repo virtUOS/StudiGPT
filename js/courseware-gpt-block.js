@@ -206,7 +206,7 @@ const CoursewareGPTBlock= {
     },
     methods: {
         async loadTranslations() {
-            this.translations = await $.getJSON(`${STUDIP.ABSOLUTE_URI_STUDIP}plugins_packages/virtUOS/CoursewareGPTBlockPlugin/locale/en/LC_MESSAGES/CoursewareGPTBlock.json`);
+            this.translations = await $.getJSON(`${STUDIP.ABSOLUTE_URI_STUDIP}plugins_packages/virtUOS/StudiGPT/locale/en/LC_MESSAGES/CoursewareGPTBlock.json`);
         },
         _(text) {
             if (this.language.includes("en") && text in this.translations) {
