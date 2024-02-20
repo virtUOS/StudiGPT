@@ -27,14 +27,16 @@ Anschließend können Sie erneut den Schwierigkeitsgrad für die neue Frage ausw
 
 ## Konfiguration
 
-Die Konfigurationen befinden sich auf der Adminoberfläche unter `Admin->Konfiguration->Globale Konfiguration->-Ohne Kategorie-`
+Die Konfigurationen befinden sich auf der Adminoberfläche unter `Admin->System->Konfiguration->Globale Konfiguration->StudiGPT`
 
 Die folgenden Konfigurationen sind verfügbar:
 
-| Name                           | Description                                                                                                                                                                     |
-|--------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| COURSEWARE_GPT_QUESTION_PROMPT | Prompt, der an die OpenAI-API gesendet wird, um ein Feedback auf eine Antwort zu generieren. Der Prompt unterstützt Stud.IP internes Templating, siehe Abschnitt Templating.    |
-| COURSEWARE_GPT_FEEDBACK_PROMPT | Prompt, der an die OpenAI-API gesendet wird, um eine Frage und eine Musterlösung zu generieren. Der Prompt unterstützt Stud.IP internes Templating, siehe Abschnitt Templating. |
+| Name                           | Description                                                                                                                                                                                                                                                                |
+|--------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| COURSEWARE_GPT_API_KEY         | Globaler API-Key, der von allen im Courseware-Block verwendet werden kann. Ein benutzerdefinierter API-Key kann im Block immer konfiguriert werden. Wenn kein globaler API-Key hinterlegt ist, kann das Plugin nur mit einem benutzerdefinierten API-Key verwendet werden. |
+| COURSEWARE_GPT_CHAT_MODEL      | Chat Model von OpenAI, welches immer mit dem globalen API-Key verwendet wird. Das Model muss mit der `Chat Completions` API von OpenAI kompatibel sein. Bei einem benutzerdefinierten API-Key kann ein abweichendes Model im Block eingestellt werden.                     |
+| COURSEWARE_GPT_QUESTION_PROMPT | Prompt, der an die OpenAI-API gesendet wird, um ein Feedback auf eine Antwort zu generieren. Der Prompt unterstützt Stud.IP internes Templating, siehe Abschnitt Templating.                                                                                               |
+| COURSEWARE_GPT_FEEDBACK_PROMPT | Prompt, der an die OpenAI-API gesendet wird, um eine Frage und eine Musterlösung zu generieren. Der Prompt unterstützt Stud.IP internes Templating, siehe Abschnitt Templating.                                                                                            |
 
 ## Templating
 
