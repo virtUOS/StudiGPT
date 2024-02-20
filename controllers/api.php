@@ -259,6 +259,7 @@ class ApiController extends PluginController
     /**
      * Exports gpt block statistics as JSON
      */
+    /*
     public function export_json_action() {
         $user = \User::findCurrent();
 
@@ -336,4 +337,5 @@ class ApiController extends PluginController
 
         $this->render_json($results);
     }
+    */
 }
