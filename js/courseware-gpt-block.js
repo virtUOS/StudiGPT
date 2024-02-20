@@ -119,11 +119,26 @@ const CoursewareGPTBlock= {
                             {{ _('Titel') }}
                             <input type="text" v-model="currentTitle"/>
                         </label>
-                        <label>
+                        <label v-if="hasGlobalApiKey">
                             {{ _('OpenAI-API-Key') }}
-                            <studip-tooltip-icon :text="_('Einen API-Key können Sie in den Accounteinstellungen der OpenAI-Webseite erstellen. Um diese Einstellungen sehen zu können, müssen Sie sich in Ihr OpenAI-Konto anmelden oder sich registrieren.')"/>
-                            <input type="password" :placeholder="apiKeyPlaceholder" v-model="apiKey"/>
+                            <studip-tooltip-icon :text="_('Sie können wählen, ob Sie den zentral hinterlegten OpenAI-API-Key Ihres Standorts oder Ihren eigenen Key verwenden möchten.')"/>
+                            <select v-model="currentApiKeyOrigin">
+                                <option value="global">{{ _('Zentraler API-Key') }}</option>
+                                <option value="custom">{{ _('Eigener API-Key') }}</option>
+                            </select>
                         </label>
+                        <div v-show="!globalApiKeySelected">
+                            <label>
+                                {{ _('Eigener OpenAI-API-Key') }}
+                                <studip-tooltip-icon :text="_('Geben Sie Ihren eigenen API-Key an. Einen API-Key können Sie in den Accounteinstellungen der OpenAI-Webseite erstellen. Um diese Einstellungen sehen zu können, müssen Sie sich in Ihr OpenAI-Konto anmelden oder sich registrieren.')"/>
+                                <input type="password" :placeholder="customApiKeyPlaceholder" v-model="customApiKey"/>
+                            </label>
+                            <label>
+                                {{ _('OpenAI-Chat-Model') }}
+                                <studip-tooltip-icon :text="_('Sie können zu Ihrem API-Key das zu verwendende OpenAI-Chat-Model angeben. Das Model muss mit der Chat Completions API von OpenAI kompatibel sein. Wenn Sie kein Model angeben, wird das in Stud.IP zentral konfigurierte Model verwendet.')"/>
+                                <input type="text" :placeholder="globalChatModel" v-model="currentCustomChatModel"/>
+                            </label>
+                        </div>
                         <label>
                             <input type="checkbox" v-model="currentUseBlockContents"/>
                             {{ _('Inhalt aus Textblöcken mitsenden') }}
@@ -186,7 +201,9 @@ const CoursewareGPTBlock= {
             currentLanguage: 'de_DE',
             currentDifficulty: 'easy',
             currentUseBlockContents: false,
-            apiKey: '',
+            currentApiKeyOrigin: 'global',
+            customApiKey: '',
+            currentCustomChatModel: '',
             showConsent: true,
             showQuestion: false,
             showFeedback: false,
@@ -212,8 +229,20 @@ const CoursewareGPTBlock= {
         title() {
             return this.block?.attributes?.payload?.title;
         },
-        hasApiKey() {
-            return this.block?.attributes?.payload?.has_api_key;
+        apiKeyOrigin() {
+            return this.block?.attributes?.payload?.api_key_origin;
+        },
+        hasGlobalApiKey() {
+            return this.block?.attributes?.payload?.has_global_api_key;
+        },
+        hasCustomApiKey() {
+            return this.block?.attributes?.payload?.has_custom_api_key;
+        },
+        globalChatModel() {
+            return this.block?.attributes?.payload?.global_chat_model;
+        },
+        customChatModel() {
+            return this.block?.attributes?.payload?.custom_chat_model;
         },
         summary() {
             return this.block?.attributes?.payload?.summary;
@@ -233,8 +262,8 @@ const CoursewareGPTBlock= {
         useBlockContents() {
             return this.block?.attributes?.payload?.use_block_contents;
         },
-        apiKeyPlaceholder() {
-            if (!this.hasApiKey) {
+        customApiKeyPlaceholder() {
+            if (!this.hasCustomApiKey) {
                 return '';
             }
 
@@ -243,6 +272,9 @@ const CoursewareGPTBlock= {
         },
         globalLanguage() {
             return this.$language.current;
+        },
+        globalApiKeySelected() {
+            return this.hasGlobalApiKey && this.currentApiKeyOrigin === 'global';
         },
     },
     methods: {
@@ -369,6 +401,8 @@ const CoursewareGPTBlock= {
         },
         initCurrentData() {
             this.currentTitle = this.title;
+            this.currentApiKeyOrigin = this.hasGlobalApiKey ? this.apiKeyOrigin : 'custom';
+            this.currentCustomChatModel = this.customChatModel;
             this.currentSummary = this.summary;
             this.currentAdditionalInstructions = this.additionalInstructions;
             this.currentLanguage = this.language;
@@ -376,34 +410,40 @@ const CoursewareGPTBlock= {
             this.currentUseBlockContents = this.useBlockContents;
         },
         storeBlock() {
-            if (!this.hasApiKey && this.apiKey === '') {
+            if (!this.globalApiKeySelected && !this.hasCustomApiKey && this.customApiKey === '') {
                 this.$store.dispatch('companionWarning', {
-                    info: this._('Bitte stelle einen OpenAI API Key bereit.')
+                    info: this._('Bitte stellen Sie Ihren OpenAI-API-Key bereit.')
                 });
                 return false;
             }
 
             if (!this.currentUseBlockContents && this.currentSummary === '') {
                 this.$store.dispatch('companionWarning', {
-                    info: this._('Bitte stelle den Inhalt der Veranstaltung bereit.')
+                    info: this._('Bitte stellen Sie den Inhalt der Veranstaltung bereit.')
                 });
                 return false;
             }
 
-            let attributes= {
-                payload: {
-                    title: this.currentTitle,
-                    api_key: this.apiKey,
-                    summary: this.currentSummary,
-                    additional_instructions: this.currentAdditionalInstructions,
-                    language: this.currentLanguage,
-                    difficulty: this.currentDifficulty,
-                    use_block_contents: this.currentUseBlockContents
-                }
+            let payload = {
+                title: this.currentTitle,
+                api_key_origin: this.currentApiKeyOrigin,
+                summary: this.currentSummary,
+                additional_instructions: this.currentAdditionalInstructions,
+                language: this.currentLanguage,
+                difficulty: this.currentDifficulty,
+                use_block_contents: this.currentUseBlockContents
             };
 
+            // Send custom api key and model if global api key is not used
+            if (!this.globalApiKeySelected) {
+                payload.custom_api_key = this.customApiKey;
+                payload.custom_chat_model = this.currentCustomChatModel;
+            }
+
             return this.$store.dispatch("updateBlockInContainer", {
-                attributes: attributes,
+                attributes: {
+                    payload: payload,
+                },
                 blockId: this.block.id,
                 containerId: this.block.relationships.container.data.id,
             });

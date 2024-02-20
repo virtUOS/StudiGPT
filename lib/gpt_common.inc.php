@@ -1,25 +1,45 @@
 <?php
 
 /**
- * Loads api key from range config depending on courseware range
+ * Loads global api key
  *
- * @return string|null OpenAI API Key
+ * @return string OpenAI API Key
  */
-function getApiKey(\Courseware\Block $block): ?string
+function getGlobalApiKey(): ?string
 {
-    $range_id = $block->container->getStructuralElement()->range_id;
-    return RangeConfig::get($range_id)->getValue('COURSEWARE_GPT_API_KEY');
+    return Config::get()->getValue('COURSEWARE_GPT_API_KEY');
 }
 
 /**
- * Stores openai api key in range config depending on courseware range
+ * Loads custom api key from range config depending on courseware range
  *
- * @param string $api_key openai api key
+ * @return string|null OpenAI API Key
  */
-function storeApiKey(\Courseware\Block $block, string $api_key)
+function getCustomApiKey(\Courseware\Block $block): ?string
 {
     $range_id = $block->container->getStructuralElement()->range_id;
-    RangeConfig::get($range_id)->store('COURSEWARE_GPT_API_KEY', $api_key);
+    return RangeConfig::get($range_id)->getValue('COURSEWARE_GPT_CUSTOM_API_KEY');
+}
+
+/**
+ * Stores custom api key in range config depending on courseware range
+ *
+ * @param string $api_key OpenAI api key
+ */
+function storeCustomApiKey(\Courseware\Block $block, string $api_key)
+{
+    $range_id = $block->container->getStructuralElement()->range_id;
+    RangeConfig::get($range_id)->store('COURSEWARE_GPT_CUSTOM_API_KEY', $api_key);
+}
+
+/**
+ * Loads name of global chat model
+ *
+ * @return string OpenAI chat model
+ */
+function getGlobalChatModel(): ?string
+{
+    return Config::get()->getValue('COURSEWARE_GPT_CHAT_MODEL');
 }
 
 /**
