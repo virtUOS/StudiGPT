@@ -64,7 +64,7 @@ class ApiController extends PluginController
         ]);
 
         // Send request to OpenAI
-        $data = $this->requestOpenai($generate_question_prompt, $block);
+        $data = $this->requestOpenai($generate_question_prompt, $block, $block_payload);
 
         // Process OpenAi response
         $text = $data['choices'][0]['message']['content'];
@@ -143,7 +143,7 @@ class ApiController extends PluginController
         ]);
 
         // Send request to OpenAI
-        $data = $this->requestOpenai($generate_feedback_prompt, $block);
+        $data = $this->requestOpenai($generate_feedback_prompt, $block, $block_payload);
 
         // Process OpenAi response
         $feedback = $data['choices'][0]['message']['content'];
@@ -168,11 +168,24 @@ class ApiController extends PluginController
     /**
      * Sends a request to the OpenAI API
      * @param $prompt string openai prompt
+     * @param $block_payload array json decoded payload of passed block
      * @return mixed|null json decoded response
      * @throws Trails_Exception when the request fails
      */
-    public function requestOpenai(string $prompt, \Courseware\Block $block) {
-        $api_key = getApiKey($block);
+    public function requestOpenai(string $prompt, \Courseware\Block $block, array $block_payload) {
+        $chat_model = getGlobalChatModel();
+
+        // Get the api key
+        if ($block_payload['api_key_origin'] === 'global') {
+            $api_key = getGlobalApiKey();
+        } else {
+            $api_key = getCustomApiKey($block);
+
+            // Use custom chat model if own api key and model not empty
+            if (!empty($block_payload['custom_chat_model'])) {
+                $chat_model = $block_payload['custom_chat_model'];
+            }
+        }
 
         if (empty($api_key)) {
             throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Bitte geben Sie im Block einen API-Key an.'));
@@ -190,7 +203,7 @@ class ApiController extends PluginController
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $post_body = json_encode([
-            'model' => 'gpt-3.5-turbo-1106',
+            'model' => $chat_model,
             'messages' => [
                 [
                     'role' => 'user',

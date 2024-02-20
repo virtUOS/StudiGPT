@@ -27,6 +27,8 @@ class GPTBlock extends BlockType
     {
         return [
             'title' => '',
+            'api_key_origin' => 'global',
+            'customChatModel' => '',
             'summary' => '',
             'additional_instructions' => '',
             'language' => 'de_DE',
@@ -61,7 +63,9 @@ class GPTBlock extends BlockType
     {
         $payload = parent::getPayload();
 
-        $payload['has_api_key'] = !empty(getApiKey($this->block));
+        $payload['has_global_api_key'] = !empty(getGlobalApiKey());
+        $payload['has_custom_api_key'] = !empty(getCustomApiKey($this->block));
+        $payload['global_chat_model'] = getGlobalChatModel();
         $payload['text_block_summary'] = getCoursewareSummary($this->block);
 
         return $payload;
@@ -69,11 +73,11 @@ class GPTBlock extends BlockType
 
     public function setPayload($payload): void
     {
-        if (!empty($payload['api_key'])) {
-            storeApiKey($this->block, $payload['api_key']);
+        if ($payload['api_key_origin'] === 'custom' && !empty($payload['custom_api_key'])) {
+            storeCustomApiKey($this->block, $payload['custom_api_key']);
         }
 
-        unset($payload['api_key']);
+        unset($payload['custom_api_key']);
         parent::setPayload($payload);
     }
 }
