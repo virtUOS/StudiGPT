@@ -33,10 +33,10 @@ const CoursewareGPTBlock= {
                                 {{ activeQuestion.question }}
                                 <div class="cw-gpt-user-feedback">
                                     <div @click="submitUserFeedback('question', 'like')" 
-                                         :class="'cw-gpt-user-feedback-like' + (userQuestionFeedback === 'like' ? '-selected' : '')"
+                                         :class="'cw-gpt-user-feedback-like' + (userQuestionFeedback?.value === 'like' ? '-selected' : '')"
                                     />
                                     <div @click="submitUserFeedback('question', 'dislike')"
-                                         :class="'cw-gpt-user-feedback-dislike' + (userQuestionFeedback === 'dislike' ? '-selected' : '')"/>
+                                         :class="'cw-gpt-user-feedback-dislike' + (userQuestionFeedback?.value === 'dislike' ? '-selected' : '')"/>
                                 </div>
                             </div>
                             <form class="default" @submit.prevent="">
@@ -64,10 +64,10 @@ const CoursewareGPTBlock= {
                                 {{ activeQuestion.question }}
                                 <div class="cw-gpt-user-feedback">
                                     <div @click="submitUserFeedback('question', 'like')"
-                                         :class="'cw-gpt-user-feedback-like' + (userQuestionFeedback === 'like' ? '-selected' : '')"
+                                         :class="'cw-gpt-user-feedback-like' + (userQuestionFeedback?.value === 'like' ? '-selected' : '')"
                                     />
                                     <div @click="submitUserFeedback('question', 'dislike')"
-                                         :class="'cw-gpt-user-feedback-dislike' + (userQuestionFeedback === 'dislike' ? '-selected' : '')"/>
+                                         :class="'cw-gpt-user-feedback-dislike' + (userQuestionFeedback?.value === 'dislike' ? '-selected' : '')"/>
                                 </div>
                             </div>
                             <div v-show="answer" class="cw-gpt-section cw-gpt-section-answer">
@@ -84,10 +84,10 @@ const CoursewareGPTBlock= {
                                 {{ feedback.content }}
                                 <div class="cw-gpt-user-feedback">
                                     <div @click="submitUserFeedback('feedback', 'like')" 
-                                         :class="'cw-gpt-user-feedback-like' + (userFeedbackFeedback === 'like' ? '-selected' : '')"
+                                         :class="'cw-gpt-user-feedback-like' + (userFeedbackFeedback?.value === 'like' ? '-selected' : '')"
                                     />
                                     <div @click="submitUserFeedback('feedback', 'dislike')"
-                                         :class="'cw-gpt-user-feedback-dislike' + (userFeedbackFeedback === 'dislike' ? '-selected' : '')"/>
+                                         :class="'cw-gpt-user-feedback-dislike' + (userFeedbackFeedback?.value === 'dislike' ? '-selected' : '')"/>
                                 </div>
                             </div>
                             <div v-show="showSolution" class="cw-gpt-section cw-gpt-section-solution">
@@ -219,8 +219,8 @@ const CoursewareGPTBlock= {
                 id: '',
                 content: '',
             },
-            userQuestionFeedback: '',
-            userFeedbackFeedback: '',
+            userQuestionFeedback: null,
+            userFeedbackFeedback: null,
             loading: false,
             translations: {},
         }
@@ -342,12 +342,13 @@ const CoursewareGPTBlock= {
         },
         generateFeedback() {
             const formData = new FormData();
+            formData.append('question_id', this.activeQuestion.id);
             formData.append('answer', this.answer);
 
             // OpenAI Feedback Request
             this.loading = true;
             this.$store.getters.httpClient
-                .post(COURSEWARE_GPT_BLOCK_BASE_URL + '/api/feedback/' + this.activeQuestion.id, formData, {
+                .post(COURSEWARE_GPT_BLOCK_BASE_URL + '/api/feedback/' + this.block.id, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -370,15 +371,24 @@ const CoursewareGPTBlock= {
                 });
         },
         submitUserFeedback(range_type, value) {
-            if (range_type === 'question') {
-                this.userQuestionFeedback = value;
-            } else if (range_type === 'feedback') {
-                this.userFeedbackFeedback = value;
+            const formData = new FormData();
+
+            let user_feedback_id = null;
+            let range_id = null;
+
+            if ( range_type === 'question') {
+                user_feedback_id = this.userQuestionFeedback?.id;
+                range_id =  this.activeQuestion.id;
+            } else {
+                user_feedback_id = this.userFeedbackFeedback?.id;
+                range_id =  this.feedback.id;
             }
 
-            const range_id = range_type === 'question' ? this.activeQuestion.id : this.feedback.id;
+            if (user_feedback_id) {
+                // Allows to update existing user feedback
+                formData.append('user_feedback_id', user_feedback_id);
+            }
 
-            const formData = new FormData();
             formData.append('range_id', range_id);
             formData.append('range_type', range_type);
             formData.append('feedback_value', value);
@@ -387,6 +397,14 @@ const CoursewareGPTBlock= {
                 .post(COURSEWARE_GPT_BLOCK_BASE_URL + '/api/user_feedback/' + this.block.id, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(response => {
+                    // Store user feedback
+                    if (response.data?.range_type === 'question') {
+                        this.userQuestionFeedback = response.data;
+                    } else if (response.data?.range_type === 'feedback') {
+                        this.userFeedbackFeedback = response.data;
                     }
                 })
                 .catch(error => {

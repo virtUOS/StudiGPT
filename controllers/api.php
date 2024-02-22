@@ -47,7 +47,10 @@ class ApiController extends PluginController
         $formatted_questions = [];
         foreach ($questions as $id) {
             $q = \CoursewareGPTBlock\GPTQuestion::find($id);
-            $formatted_questions[] = "{$q->question}\n\n{$q->solution}";
+            // Check if question is related to block
+            if ($q->block_id === $block_id) {
+                $formatted_questions[] = "{$q->question}\n\n{$q->solution}";
+            }
         }
         $questions_text = join("\n\n", $formatted_questions);
 
@@ -89,7 +92,6 @@ class ApiController extends PluginController
             'prompt'                    => $generate_question_prompt,
             'click_date'                => $click_date,
             'generated_date'            => time(),
-            'creator_id'                => $user->id,
             'block_id'                  => $block_id,
             'course_id'                 => isset($course) ? $course->id : null,
         ]);
@@ -103,16 +105,23 @@ class ApiController extends PluginController
         ]);
     }
 
-    public function feedback_action($question_id)
+    public function feedback_action($block_id)
     {
-        $question = \CoursewareGPTBlock\GPTQuestion::find($question_id);
-        $block = \Courseware\Block::find($question->block_id);
-        $user = \User::findCurrent();
-
         $click_date = time();
+
+        $block = \Courseware\Block::find($block_id);
+        $user = \User::findCurrent();
 
         // Check permissions
         if (!$block->container->getStructuralElement()->canRead($user)) {
+            throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
+        }
+
+        $question_id = Request::get('question_id');
+        $question = \CoursewareGPTBlock\GPTQuestion::find($question_id);
+
+        // Question must be related to the block
+        if ($question->block_id !== $block_id) {
             throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
         }
 
@@ -129,8 +138,7 @@ class ApiController extends PluginController
         $answer_object = \CoursewareGPTBlock\GPTUserAnswer::create([
             'answer'        => $answer,
             'mkdate'        => time(),
-            'question_id'   => $question_id,
-            'user_id'       => $user->id,
+            'question_id'   => $question->id,
         ]);
 
         Template::setTagMarkers('{{', '}}');
@@ -236,8 +244,10 @@ class ApiController extends PluginController
 
     public function user_feedback_action($block_id)
     {
+        $user_feedback_id = Request::get('user_feedback_id');
         $range_id = Request::get('range_id');
         $range_type = Request::get('range_type');
+        $feedback_value = Request::get('feedback_value');
 
         $block = \Courseware\Block::find($block_id);
         $user = \User::findCurrent();
@@ -247,26 +257,42 @@ class ApiController extends PluginController
             throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
         }
 
-        $feedback_value = Request::get('feedback_value');
-
-        // Find existing user feedback
-        $user_feedback = \CoursewareGPTBlock\GPTUserFeedback::findOneBySQL("range_id = ? AND range_type = ? AND user_id = ?", [$range_id, $range_type, $user->id]);
-        if (!$user_feedback) {
-            // Create new
-            \CoursewareGPTBlock\GPTUserFeedback::create([
-                'range_id'      => $range_id,
-                'range_type'    => $range_type,
-                'value'         => $feedback_value,
-                'mkdate'        => time(),
-                'user_id'       => $user->id,
-            ]);
-        } else {
-            // Update value
-            $user_feedback->value = $feedback_value;
-            $user_feedback->store();
+        // Check if range object (question, feedback) is related to block
+        $is_range_in_block = false;
+        if ($range_type === 'question') {
+            $question_object = \CoursewareGPTBlock\GPTQuestion::find($range_id);
+            $is_range_in_block = $question_object->block_id === $block_id;
+        } elseif ($range_type === 'feedback') {
+            $feedback_object = \CoursewareGPTBlock\GPTFeedback::find($range_id);
+            $is_range_in_block = $feedback_object->user_answer->question->block_id === $block_id;
         }
 
-        $this->render_nothing();
+        if (!$is_range_in_block) {
+            throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
+        }
+
+        $user_feedback_object = null;
+        if (!empty($user_feedback_id)) {
+            // Find existing user feedback of given range object
+            $user_feedback_object = \CoursewareGPTBlock\GPTUserFeedback::findOneBySQL(
+                'id = ? AND range_id = ? AND range_type = ?',
+                [$user_feedback_id, $range_id, $range_type]
+            );
+        }
+        if (empty($user_feedback_object)) {
+            // Create new user feedback
+            $user_feedback_object = new \CoursewareGPTBlock\GPTUserFeedback();
+        }
+
+        $user_feedback_object->setData([
+            'range_id'      => $range_id,
+            'range_type'    => $range_type,
+            'value'         => $feedback_value,
+            'mkdate'        => time(),
+        ]);
+        $user_feedback_object->store();
+
+        $this->render_json($user_feedback_object->toArray());
     }
 
     /**

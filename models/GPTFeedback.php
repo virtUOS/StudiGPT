@@ -5,7 +5,7 @@ namespace CoursewareGPTBlock;
 /**
  * Generated feedback to a user's answer
  *
- * @property string                                     $answer_id          database column
+ * @property int                                        $answer_id          database column
  * @property string                                     $id                 alias column for answer_id
  * @property string                                     $feedback           database column
  * @property string                                     $prompt             database column
