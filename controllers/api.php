@@ -232,9 +232,14 @@ class ApiController extends PluginController
         $error = curl_error($ch);
         curl_close($ch);
         if ($error || $http_code >= 400) {
-            $error_msg = dgettext('CoursewareGPTBlock', 'Fehler bei OpenAI-API-Anfrage aufgetreten');
-            if (mb_strpos($response, 'invalid_api_key') !== false) {
+            $error_response = json_decode($response, true);
+
+            $error_msg = dgettext('CoursewareGPTBlock', "OpenAI-API-Fehler: {$error_response['error']['message']}.");
+            if ($error_response['error']['code'] === 'invalid_api_key') {
                 $error_msg = dgettext('CoursewareGPTBlock', 'Der OpenAI-API-Key ist fehlerhaft.');
+            }
+            if ($error_response['error']['code'] === 'model_not_found') {
+                $error_msg = dgettext('CoursewareGPTBlock', 'Das OpenAI-Model konnte nicht gefunden werden.');
             }
             throw new Trails_Exception(500, $error_msg);
         }
