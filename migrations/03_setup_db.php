@@ -56,8 +56,7 @@ class SetupDb extends Migration
                 `value` tinytext NOT NULL,
                 `mkdate` int(11) NOT NULL,
                 PRIMARY KEY (`id`),
-                KEY `range_id` (`range_id`),
-                KEY `range_type` (`range_type`)
+                KEY `range` (`range_id`, `range_type`)
         )";
         $db->exec($sql);
     }
