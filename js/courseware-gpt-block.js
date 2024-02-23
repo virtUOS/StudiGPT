@@ -18,7 +18,8 @@ const CoursewareGPTBlock= {
                     <div v-show="!loading">
                         <div v-if="showConsent" class="cw-gpt-consent">
                             <p>
-                                {{ _('Ich stimme zu, dass meine Antwort zur Auswertung an OpenAI weitergegeben werden darf und für Evaluationszwecke gespeichert wird. Ich stelle sicher, dass ich keine persönlichen Informationen oder sensiblen Daten wie Passwörter angebe. Meine Eingaben werden im Rahmen einer Evaluation ausgewertet, um die Usability dieser Funktion und die Qualität der generierten Fragen und Feedbacks bewerten zu können.') }}</p>
+                                {{ _('Ich stimme zu, dass meine Antwort zur Auswertung an OpenAI weitergegeben werden darf und für Evaluationszwecke anonym gespeichert wird. Ich stelle sicher, dass ich keine persönlichen Informationen oder sensiblen Daten wie Passwörter angebe. Die generierten Fragen und Feedback sowie meine Antworten werden vollständig anonym in Stud.IP gespeichert, um die Usability dieser Funktion und die Qualität der generierten Fragen und Feedback evaluieren zu können.') }}
+                            </p>
                             <div class="cw-gpt-buttons">
                                 <button @click="generateQuestion" class="button accept">
                                     {{ _('Zustimmen und Frage generieren') }}
@@ -186,7 +187,8 @@ const CoursewareGPTBlock= {
                                 {{ _('Datenschutz') }}
                             </header>
                             <p>
-                                {{ _('Mit der Erstellung dieses Blockes bestätige ich, dass die Kursinhalte der aktuellen Seite keine geschützten personenbezogenen Daten enthalten und somit an OpenAI übermittelt werden dürfen. Zudem erlaube ich die Speicherung meiner Daten, damit die Usability dieses Blocks und die Qualität der generierten Fragen und Feedbacks evaluiert werden dürfen.') }}</p>
+                                {{ _('Mit der Erstellung dieses Blockes bestätige ich, dass die Kursinhalte der aktuellen Seite keine geschützten personenbezogenen Daten enthalten und somit an OpenAI übermittelt werden dürfen. Während der Nutzung werden die generierten Fragen und Musterlösungen mit Ihren Einstellungen in Stud.IP abgespeichert, um die Usability dieses Blocks und die Qualität der generierten Fragen und Feedback evaluieren zu können. Zu diesen Einstellungen zählen der Lehrinhalt, die zusätzlichen Anweisungen, die Sprache und die Schwierigkeit.') }}
+                            </p>
                         </div>
                     </form>
                 </template>
