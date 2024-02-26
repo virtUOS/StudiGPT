@@ -304,6 +304,8 @@ const CoursewareGPTBlock= {
             this.answer = '';
             this.feedback.id = '';
             this.feedback.content = '';
+            this.userQuestionFeedback = null;
+            this.userFeedbackFeedback = null;
 
             const formData = new FormData();
             formData.append('questions', JSON.stringify(this.questions));
