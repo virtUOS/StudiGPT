@@ -187,7 +187,7 @@ const CoursewareGPTBlock= {
                                 {{ _('Datenschutz') }}
                             </header>
                             <p>
-                                {{ _('Mit der Erstellung dieses Blockes bestätige ich, dass die Kursinhalte der aktuellen Seite keine geschützten personenbezogenen Daten enthalten und somit an OpenAI übermittelt werden dürfen. Während der Nutzung werden die generierten Fragen und Musterlösungen mit Ihren Einstellungen in Stud.IP abgespeichert, um die Usability dieses Blocks und die Qualität der generierten Fragen und Feedback evaluieren zu können. Zu diesen Einstellungen zählen der Lehrinhalt, die zusätzlichen Anweisungen, die Sprache und die Schwierigkeit.') }}
+                                {{ _('Mit der Erstellung dieses Blockes bestätige ich, dass die Kursinhalte der aktuellen Seite keine geschützten personenbezogenen Daten enthalten und somit an OpenAI übermittelt werden dürfen. Während der Nutzung werden die generierten Fragen und Musterlösungen mit den angegebenen Einstellungen in Stud.IP abgespeichert, um die Usability dieses Blocks und die Qualität der generierten Fragen und Feedback evaluieren zu können. Zu diesen Einstellungen zählen der Lehrinhalt, die zusätzlichen Anweisungen, die Sprache und die Schwierigkeit.') }}
                             </p>
                         </div>
                     </form>
