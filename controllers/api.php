@@ -48,7 +48,7 @@ class ApiController extends PluginController
         foreach ($questions as $id) {
             $q = \CoursewareGPTBlock\GPTQuestion::find($id);
             // Check if question is related to block
-            if ($q->block_id === $block_id) {
+            if ($q->block_id == $block_id) {
                 $formatted_questions[] = "{$q->question}\n\n{$q->solution}";
             }
         }
@@ -121,7 +121,7 @@ class ApiController extends PluginController
         $question = \CoursewareGPTBlock\GPTQuestion::find($question_id);
 
         // Question must be related to the block
-        if ($question->block_id !== $block_id) {
+        if ($question->block_id != $block_id) {
             throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
         }
 
@@ -266,10 +266,10 @@ class ApiController extends PluginController
         $is_range_in_block = false;
         if ($range_type === 'question') {
             $question_object = \CoursewareGPTBlock\GPTQuestion::find($range_id);
-            $is_range_in_block = $question_object->block_id === $block_id;
+            $is_range_in_block = $question_object->block_id == $block_id;
         } elseif ($range_type === 'feedback') {
             $feedback_object = \CoursewareGPTBlock\GPTFeedback::find($range_id);
-            $is_range_in_block = $feedback_object->user_answer->question->block_id === $block_id;
+            $is_range_in_block = $feedback_object->user_answer->question->block_id == $block_id;
         }
 
         if (!$is_range_in_block) {
