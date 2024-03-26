@@ -18,7 +18,7 @@ const CoursewareGPTBlock= {
                     <div v-show="!loading">
                         <div v-if="showConsent" class="cw-gpt-consent">
                             <p>
-                                {{ _('Ich stimme zu, dass meine Antwort zur Auswertung an OpenAI weitergegeben werden darf und für Evaluationszwecke anonym gespeichert wird. Ich stelle sicher, dass ich keine persönlichen Informationen oder sensiblen Daten wie Passwörter angebe. Die generierten Fragen und Feedback sowie meine Antworten werden vollständig anonym in Stud.IP gespeichert, um die Usability dieser Funktion und die Qualität der generierten Fragen und Feedback evaluieren zu können.') }}
+                                {{ _('Ich stimme zu, dass meine Antwort zur Auswertung an OpenAI weitergegeben werden darf und für Evaluationszwecke anonym gespeichert wird. Ich stelle sicher, dass ich keine persönlichen Informationen oder sensiblen Daten wie Passwörter angebe. Die generierten Fragen und Feedback sowie meine Antworten werden vollständig anonym in Stud.IP gespeichert, um die Usability dieser Funktion und die Qualität der generierten Fragen und Feedback evaluieren zu können. Überprüfen Sie immer die Korrektheit der generierten Texte, da diese von der KI erzeugte Halluzinationen enthalten können.') }}
                             </p>
                             <div class="cw-gpt-buttons">
                                 <button @click="generateQuestion" class="button accept">
