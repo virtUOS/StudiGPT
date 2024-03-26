@@ -218,7 +218,7 @@ class ApiController extends PluginController
                     'content' => $prompt,
                 ],
             ],
-            'max_tokens' => 200,
+            'max_tokens' => 500,
             'temperature' => 0.9,
             'top_p' => 1,
             'frequency_penalty' => 0,
