@@ -17,7 +17,7 @@ class AddGermanPrompts extends Migration
         // Recreate config with german prompts as default
         $cfg->create('COURSEWARE_GPT_QUESTION_PROMPT',
             [
-                'value' => 'Sie sind Professor in einer mündlichen Prüfung an einer Universität und unterrichten einen Kurs mit dem Namen "{{ title }}". Eine Zusammenfassung der Lehrveranstaltung dieser Woche lautet:
+                'value' => 'Sie sind Professor/-in in einer mündlichen Prüfung an einer Universität und unterrichten einen Kurs mit dem Namen "{{ title }}". Eine Zusammenfassung der Lehrveranstaltung dieser Woche lautet:
 
 {{ summary }}
 
@@ -83,11 +83,11 @@ Now the next question and answer pair:',
         // Recreate config with german prompts as default
         $cfg->create('COURSEWARE_GPT_FEEDBACK_PROMPT',
             [
-                'value' => 'Sie sind ein Professor in einer mündlichen Prüfung an einer Universität.
+                'value' => 'Sie sind Professor/-in in einer mündlichen Prüfung an einer Universität.
 
 Die Frage lautet: {{ question }}
 
-Ich (der Student) antworte: {{ answer }}
+Ich (als Student/-in) antworte: {{ answer }}
 
 Bitte geben Sie mir eine Bewertung meiner Antwort auf die Prüfungsfrage und eine Erklärung gemäß der Musterlösung: {{ solution }}{}',
                 'type' => 'i18n',
@@ -102,7 +102,7 @@ Bitte geben Sie mir eine Bewertung meiner Antwort auf die Prüfungsfrage und ein
 
 The question is: {{ question }}
 
-I (the student) respond: {{ answer }}
+I (as student) respond: {{ answer }}
 
 Please give me an evaluation of my answer to the exam question, and give an explanation according to the sample solution: {{ solution }}{}',
             'en_GB');
