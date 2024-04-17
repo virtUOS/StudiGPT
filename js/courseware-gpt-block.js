@@ -33,13 +33,13 @@ const CoursewareGPTBlock= {
                                 </div>
                                 {{ activeQuestion.question }}
                                 <div class="cw-gpt-user-feedback">
-                                    <div @click="submitUserFeedback('question', 'like')" 
+                                    <div @click="submitUserFeedback('question', 1)" 
                                          class="cw-gpt-user-feedback-like"
-                                         :class="{ selected: userQuestionFeedback?.value === 'like' }"
+                                         :class="{ selected: userQuestionFeedback?.value === 1 }"
                                     />
-                                    <div @click="submitUserFeedback('question', 'dislike')"
+                                    <div @click="submitUserFeedback('question', 0)"
                                          class="cw-gpt-user-feedback-dislike"
-                                         :class="{ selected: userQuestionFeedback?.value === 'dislike' }"
+                                         :class="{ selected: userQuestionFeedback?.value === 0 }"
                                     />
                                 </div>
                             </div>
@@ -67,13 +67,13 @@ const CoursewareGPTBlock= {
                                 </div>
                                 {{ activeQuestion.question }}
                                 <div class="cw-gpt-user-feedback">
-                                    <div @click="submitUserFeedback('question', 'like')"
+                                    <div @click="submitUserFeedback('question', 1)"
                                          class="cw-gpt-user-feedback-like"
-                                         :class="{ selected: userQuestionFeedback?.value === 'like' }"
+                                         :class="{ selected: userQuestionFeedback?.value === 1 }"
                                     />
-                                    <div @click="submitUserFeedback('question', 'dislike')"
+                                    <div @click="submitUserFeedback('question', 0)"
                                          class="cw-gpt-user-feedback-dislike"
-                                         :class="{ selected: userQuestionFeedback?.value === 'dislike' }"
+                                         :class="{ selected: userQuestionFeedback?.value === 0 }"
                                     />
                                 </div>
                             </div>
@@ -90,13 +90,13 @@ const CoursewareGPTBlock= {
                                 </div>
                                 {{ feedback.content }}
                                 <div class="cw-gpt-user-feedback">
-                                    <div @click="submitUserFeedback('feedback', 'like')"
+                                    <div @click="submitUserFeedback('feedback', 1)"
                                          class="cw-gpt-user-feedback-like"
-                                         :class="{ selected: userFeedbackFeedback?.value === 'like' }"
+                                         :class="{ selected: userFeedbackFeedback?.value === 1 }"
                                     />
-                                    <div @click="submitUserFeedback('feedback', 'dislike')"
+                                    <div @click="submitUserFeedback('feedback', 0)"
                                          class="cw-gpt-user-feedback-dislike"
-                                         :class="{ selected: userFeedbackFeedback?.value === 'dislike' }"
+                                         :class="{ selected: userFeedbackFeedback?.value === 0 }"
                                     />
                                 </div>
                             </div>

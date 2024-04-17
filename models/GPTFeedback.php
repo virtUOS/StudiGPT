@@ -8,9 +8,8 @@ namespace CoursewareGPTBlock;
  * @property int                                        $answer_id          database column
  * @property string                                     $id                 alias column for answer_id
  * @property string                                     $feedback           database column
- * @property string                                     $prompt             database column
  * @property int                                        $click_date         database column
- * @property int                                        $generated_date     database column
+ * @property int                                        $mkdate             database column
  * @property ?\CoursewareGPTBlock\GPTUserFeedback       $user_feedback      has_one CoursewareGPTBlock\GPTUserFeedback
  * @property \CoursewareGPTBlock\GPTUserAnswer          $user_answer        belongs_to CoursewareGPTBlock\GPTUserAnswer
  */

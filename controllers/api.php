@@ -89,9 +89,8 @@ class ApiController extends PluginController
             'difficulty'                => $difficulty,
             'additional_instructions'   => $additional_instructions,
             'language'                  => $language,
-            'prompt'                    => $generate_question_prompt,
             'click_date'                => $click_date,
-            'generated_date'            => time(),
+            'mkdate'                    => time(),
             'block_id'                  => $block_id,
             'course_id'                 => isset($course) ? $course->id : null,
         ]);
@@ -158,11 +157,10 @@ class ApiController extends PluginController
 
         // Store feedback
         $feedback_object = \CoursewareGPTBlock\GPTFeedback::create([
-            'answer_id'         => $answer_object->id,
-            'feedback'          => $feedback,
-            'prompt'            => $generate_feedback_prompt,
-            'click_date'        => $click_date,
-            'generated_date'    => time(),
+            'answer_id'  => $answer_object->id,
+            'feedback'   => $feedback,
+            'click_date' => $click_date,
+            'mkdate'     => time(),
         ]);
 
         $this->render_json([
@@ -252,7 +250,7 @@ class ApiController extends PluginController
         $user_feedback_id = Request::get('user_feedback_id');
         $range_id = Request::get('range_id');
         $range_type = Request::get('range_type');
-        $feedback_value = Request::get('feedback_value');
+        $feedback_value = Request::int('feedback_value');
 
         $block = \Courseware\Block::find($block_id);
         $user = \User::findCurrent();
@@ -297,7 +295,10 @@ class ApiController extends PluginController
         ]);
         $user_feedback_object->store();
 
-        $this->render_json($user_feedback_object->toArray());
+        $response = $user_feedback_object->toArray();
+        $response['value'] = (int) $response['value'];  // Ensure value is integer
+
+        $this->render_json($response);
     }
 
     /**
