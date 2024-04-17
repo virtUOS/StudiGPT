@@ -22,7 +22,7 @@ class ApiController extends PluginController
         $block_payload = json_decode($block->payload, true);
 
         $additional_instructions = $block_payload['additional_instructions'];
-        $language = $block_payload['language'];
+        $language = $block_payload['language'] ?? 'de_DE';
 
         $difficulty = Request::get('difficulty');
         $questions = json_decode(Request::get('questions'));
