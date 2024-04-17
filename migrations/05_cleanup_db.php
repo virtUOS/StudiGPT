@@ -65,5 +65,17 @@ class CleanupDb extends Migration {
             CHANGE COLUMN `value` `value` tinytext NOT NULL
         ";
         $db->exec($sql);
+
+        $sql = "UPDATE `gpt_user_feedback`
+            SET `value` = 'like' 
+            WHERE `value` = '1'
+        ";
+        $db->exec($sql);
+
+        $sql = "UPDATE `gpt_user_feedback`
+            SET `value` = 'dislike' 
+            WHERE `value` = '0'
+        ";
+        $db->exec($sql);
     }
 }

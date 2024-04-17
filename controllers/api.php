@@ -90,7 +90,6 @@ class ApiController extends PluginController
             'additional_instructions'   => $additional_instructions,
             'language'                  => $language,
             'click_date'                => $click_date,
-            'mkdate'                    => time(),
             'block_id'                  => $block_id,
             'course_id'                 => isset($course) ? $course->id : null,
         ]);
@@ -291,7 +290,6 @@ class ApiController extends PluginController
             'range_id'      => $range_id,
             'range_type'    => $range_type,
             'value'         => $feedback_value,
-            'mkdate'        => time(),
         ]);
         $user_feedback_object->store();
 
