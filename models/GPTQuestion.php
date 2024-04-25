@@ -10,9 +10,8 @@ namespace CoursewareGPTBlock;
  * @property string                         $solution           database column
  * @property string                         $difficulty         database column
  * @property string                         $language           database column
- * @property string                         $prompt             database column
  * @property string                         $click_date         database column
- * @property int                            $generated_date     database column
+ * @property int                            $mkdate             database column
  * @property int                            $block_id           database column
  * @property string                         $course_id          database column
  * @property \SimpleORMapCollection         $user_answers       has_many CoursewareGPTBlock\GPTUserAnswer
