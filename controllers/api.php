@@ -135,7 +135,6 @@ class ApiController extends PluginController
         // Store user answer
         $answer_object = \CoursewareGPTBlock\GPTUserAnswer::create([
             'answer'        => $answer,
-            'mkdate'        => time(),
             'question_id'   => $question->id,
         ]);
 
@@ -159,7 +158,6 @@ class ApiController extends PluginController
             'answer_id'  => $answer_object->id,
             'feedback'   => $feedback,
             'click_date' => $click_date,
-            'mkdate'     => time(),
         ]);
 
         $this->render_json([
