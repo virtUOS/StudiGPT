@@ -15,6 +15,9 @@ namespace CoursewareGPTBlock;
  */
 class GPTUserFeedback extends \SimpleORMap
 {
+    const LIKE = 1;
+    const DISLIKE = 0;
+
     protected static function configure($config = [])
     {
         $config['db_table'] = 'gpt_user_feedback';
@@ -29,5 +32,34 @@ class GPTUserFeedback extends \SimpleORMap
         ];
 
         parent::configure($config);
+    }
+
+    /**
+     * Get statistics to given range object containing number of likes and dislikes
+     *
+     * @param string $range_id id of question or feedback
+     * @return int[] [likes: int, dislikes: int]: number of likes and dislikes
+     */
+    public static function getStatistics(string $range_id): array
+    {
+        $user_feedbacks = static::findBySQL("range_id = ?", [$range_id]);
+
+        $likes = 0;
+        $dislikes = 0;
+        foreach ($user_feedbacks as $feedback) {
+            switch ($feedback->value) {
+                case self::LIKE:
+                    $likes++;
+                    break;
+                case self::DISLIKE:
+                    $dislikes++;
+                    break;
+            }
+        }
+
+        return [
+            'likes' => $likes,
+            'dislikes' => $dislikes,
+        ];
     }
 }
