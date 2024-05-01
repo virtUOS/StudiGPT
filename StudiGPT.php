@@ -4,10 +4,12 @@ require_once 'lib/gpt_common.inc.php';
 
 StudipAutoloader::addClassLookups([
     'CoursewareGPTBlock\GPTBlock'  => __DIR__ . '/lib/GPTBlock.php',
+    'CoursewareGPTBlock\GPTClient'  => __DIR__ . '/lib/clients/GPTClient.php',
+    'CoursewareGPTBlock\OpenaiClient'  => __DIR__ . '/lib/clients/OpenaiClient.php',
     'CoursewareGPTBlock\GPTFeedback'  => __DIR__ . '/models/GPTFeedback.php',
     'CoursewareGPTBlock\GPTQuestion'  => __DIR__ . '/models/GPTQuestion.php',
     'CoursewareGPTBlock\GPTUserAnswer'  => __DIR__ . '/models/GPTUserAnswer.php',
-    'CoursewareGPTBlock\GPTUserFeedback'  => __DIR__ . '/models/GPTUserFeedback.php'
+    'CoursewareGPTBlock\GPTUserFeedback'  => __DIR__ . '/models/GPTUserFeedback.php',
 ]);
 
 use Courseware\CoursewarePlugin;
@@ -20,7 +22,7 @@ class StudiGPT extends StudIPPlugin implements SystemPlugin, CoursewarePlugin
 
         if (match_route('dispatch.php/*/courseware')) {
             PageLayout::addHeadElement('script', [], 'var COURSEWARE_GPT_BLOCK_BASE_URL = "' . dirname($this->url_for('api')) . '";');
-            \PageLayout::addScript($this->getPluginUrl() . '/js/courseware-gpt-block.js');
+            \PageLayout::addScript($this->getPluginUrl() . '/js/courseware-gpt-block.js', ['type' => 'module']);
             \PageLayout::addStylesheet($this->getPluginURL() . '/css/courseware-gpt-block.css');
             // Set block adder icon
             \PageLayout::addStyle('.cw-blockadder-item.cw-blockadder-item-gpt { background-image:url('.\Icon::create('chat')->asImagePath().')}');

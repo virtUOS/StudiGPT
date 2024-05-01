@@ -29,6 +29,20 @@
         },
         "custom_chat_model": {
             "type": "string"
+        },
+        "question_mode": {
+            "type": "string",
+            "enum": ["pool", "random"]
+        },
+        "question_count": {
+            "type": "integer",
+            "enum": [5, 10, 15]
+        },
+        "block_questions": {
+            "type": "array",
+            "items": {
+                "type": "object"
+            }
         }
     },
     "required": ["api_key_origin", "summary"],

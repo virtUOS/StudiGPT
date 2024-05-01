@@ -1,45 +1,31 @@
 <?php
 
 /**
- * Loads global api key
+ * Sends a prompt to the configured LLM API
  *
- * @return string OpenAI API Key
+ * @param $prompt string prompt
+ * @param $block_payload array json decoded payload of passed block
+ *
+ * @return mixed|null json decoded response
+ *
+ * @throws Trails_Exception when the request fails
  */
-function getGlobalApiKey(): ?string
-{
-    return Config::get()->getValue('COURSEWARE_GPT_API_KEY');
-}
+function sendPrompt(string $prompt, \Courseware\Block $block, array $block_payload) {
+    // TODO: Add more LLM APIs / Clients here
+    $client = \CoursewareGPTBlock\OpenaiClient::getInstance();
 
-/**
- * Loads custom api key from range config depending on courseware range
- *
- * @return string|null OpenAI API Key
- */
-function getCustomApiKey(\Courseware\Block $block): ?string
-{
     $range_id = $block->container->getStructuralElement()->range_id;
-    return RangeConfig::get($range_id)->getValue('COURSEWARE_GPT_CUSTOM_API_KEY');
-}
+    $api_key_origin = $block_payload['api_key_origin'];
 
-/**
- * Stores custom api key in range config depending on courseware range
- *
- * @param string $api_key OpenAI api key
- */
-function storeCustomApiKey(\Courseware\Block $block, string $api_key)
-{
-    $range_id = $block->container->getStructuralElement()->range_id;
-    RangeConfig::get($range_id)->store('COURSEWARE_GPT_CUSTOM_API_KEY', $api_key);
-}
+    $chat_model = \CoursewareGPTBlock\GPTClient::getGlobalChatModel();
+    if ($api_key_origin === 'custom') {
+        // Use custom chat model if own api key and model not empty
+        if (!empty($block_payload['custom_chat_model'])) {
+            $chat_model = $block_payload['custom_chat_model'];
+        }
+    }
 
-/**
- * Loads name of global chat model
- *
- * @return string OpenAI chat model
- */
-function getGlobalChatModel(): ?string
-{
-    return Config::get()->getValue('COURSEWARE_GPT_CHAT_MODEL');
+    return $client->request($prompt, $api_key_origin, $range_id, $chat_model);
 }
 
 /**

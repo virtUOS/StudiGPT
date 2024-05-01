@@ -1,112 +1,53 @@
 <?php
 
-require_once 'vendor/exTpl/Template.php';
-
-use exTpl\Template;
-
 class ApiController extends PluginController
 {
+    /**
+     * Generates new questions using an LLM model
+     *
+     * @param $block_id
+     * @return void
+     * @throws AccessDeniedException
+     */
     public function question_action($block_id)
     {
         $block = \Courseware\Block::find($block_id);
         $structural_element = $block->container->getStructuralElement();
         $user = \User::findCurrent();
 
-        $click_date = time();
-
         // Check permissions
         if (!$structural_element->canRead($user)) {
             throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
         }
 
-        $block_payload = json_decode($block->payload, true);
-
-        $additional_instructions = $block_payload['additional_instructions'];
-        $language = $block_payload['language'] ?? 'de_DE';
-
         $difficulty = Request::get('difficulty');
-        $questions = json_decode(Request::get('questions'));
+        $questions = json_decode(Request::get('questions'), true);
+        $number = Request::int('number', 1);
 
-        // Get course title or title of learning content
-        if ($structural_element->range_type == 'course') {
-            $course = $structural_element->course;
-            $title = $course->name;
-        } else {
-            $root_courseware = \Courseware\StructuralElement::getCoursewareUser($structural_element->range_id);
-            $title = $root_courseware->title;
+        $generated_questions = \CoursewareGPTBlock\GPTQuestion::generateQuestions($block, $difficulty, $number, $questions);
+        $response = [];
+
+        foreach ($generated_questions as $generated_question) {
+            $response[] = [
+                'id' => $generated_question->id,
+                'question' => $generated_question->question,
+                'solution' => $generated_question->solution,
+                'difficulty' => $generated_question->difficulty,
+            ];
         }
 
-        // Collect courseware site text content
-        if ($block_payload['use_block_contents']) {
-            $summary = getCoursewareSummary($block);
-        } else {
-            $summary = $block_payload['summary'];
-        }
-
-        // Format questions properly
-        $formatted_questions = [];
-        foreach ($questions as $id) {
-            $q = \CoursewareGPTBlock\GPTQuestion::find($id);
-            // Check if question is related to block
-            if ($q->block_id == $block_id) {
-                $formatted_questions[] = "{$q->question}\n\n{$q->solution}";
-            }
-        }
-        $questions_text = join("\n\n", $formatted_questions);
-
-        // Render template
-        Template::setTagMarkers('{{', '}}');
-        $question_prompt = Config::get()->getValue('COURSEWARE_GPT_QUESTION_PROMPT')->localized($language);
-        $template = new Template($question_prompt);
-        $generate_question_prompt = $template->render([
-            'title' => $title,
-            'summary' => $summary,
-            'additional_instructions' => $additional_instructions,
-            'difficulty' => $difficulty,
-            'questions' => $questions_text
-        ]);
-
-        // Send request to OpenAI
-        $data = $this->requestOpenai($generate_question_prompt, $block, $block_payload);
-
-        // Process OpenAi response
-        $text = $data['choices'][0]['message']['content'];
-        $text_lines = array_map('trim', explode("\n", $text));
-
-        // Get the last question and answer
-        if (!empty($text_lines[count($text_lines) - 2])) {
-            $question = $text_lines[count($text_lines) - 2];
-            $solution = $text_lines[count($text_lines) - 1];
-        } else {
-            $question = $text_lines[count($text_lines) - 3];
-            $solution = $text_lines[count($text_lines) - 1];
-        }
-
-        // Store generated question in database
-        $question_object = \CoursewareGPTBlock\GPTQuestion::create([
-            'question'                  => $question,
-            'solution'                  => $solution,
-            'difficulty'                => $difficulty,
-            'additional_instructions'   => $additional_instructions,
-            'language'                  => $language,
-            'click_date'                => $click_date,
-            'block_id'                  => $block_id,
-            'course_id'                 => isset($course) ? $course->id : null,
-        ]);
-
-        $this->render_json([
-            'id' => $question_object->id,
-            'question' => $question,
-            'solution' => $solution,
-            //'prompt' => $generate_question_prompt,  // TODO: Add when debugging mode is implemented
-            //'openai_response' => $data,  // TODO: Add when debugging mode is implemented
-        ]);
+        $this->render_json($response);
     }
 
+    /**
+     * Generates feedback for a user question answer using an LLM model
+     *
+     * @param $block_id
+     * @return void
+     * @throws AccessDeniedException
+     */
     public function feedback_action($block_id)
     {
-        $click_date = time();
-
         $block = \Courseware\Block::find($block_id);
         $user = \User::findCurrent();
 
@@ -123,14 +64,7 @@ class ApiController extends PluginController
             throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
         }
 
-        $block_payload = json_decode($block->payload, true);
-        $language = $block_payload['language'];
-
-        $answer = Request::get('answer');
-
-        if (empty($answer)) {
-            $answer = "I don't know.";
-        }
+        $answer = Request::get('answer', 'No answer');
 
         // Store user answer
         $answer_object = \CoursewareGPTBlock\GPTUserAnswer::create([
@@ -138,110 +72,22 @@ class ApiController extends PluginController
             'question_id'   => $question->id,
         ]);
 
-        Template::setTagMarkers('{{', '}}');
-        $feedback_prompt = Config::get()->getValue('COURSEWARE_GPT_FEEDBACK_PROMPT')->localized($language);
-        $template = new Template($feedback_prompt);
-        $generate_feedback_prompt = $template->render([
-            'question' => $question->question,
-            'answer' => $answer,
-            'solution' => $question->solution,
-        ]);
-
-        // Send request to OpenAI
-        $data = $this->requestOpenai($generate_feedback_prompt, $block, $block_payload);
-
-        // Process OpenAi response
-        $feedback = $data['choices'][0]['message']['content'];
-
-        // Store feedback
-        $feedback_object = \CoursewareGPTBlock\GPTFeedback::create([
-            'answer_id'  => $answer_object->id,
-            'feedback'   => $feedback,
-            'click_date' => $click_date,
-        ]);
+        // Generate feedback
+        $feedback_object = \CoursewareGPTBlock\GPTFeedback::generateFeedback($block, $question, $answer_object);
 
         $this->render_json([
             'id' => $feedback_object->id,
-            'feedback' => $feedback,
-            //'prompt' => $generate_feedback_prompt,  // TODO: Add when debugging mode is implemented
-            //'openai_response' => $data,  // TODO: Add when debugging mode is implemented
+            'feedback' => $feedback_object->feedback,
         ]);
     }
 
     /**
-     * Sends a request to the OpenAI API
-     * @param $prompt string openai prompt
-     * @param $block_payload array json decoded payload of passed block
-     * @return mixed|null json decoded response
-     * @throws Trails_Exception when the request fails
+     * Stores user feedback for a generated question or feedback
+     *
+     * @param $block_id
+     * @return void
+     * @throws AccessDeniedException
      */
-    public function requestOpenai(string $prompt, \Courseware\Block $block, array $block_payload) {
-        $chat_model = getGlobalChatModel();
-
-        // Get the api key
-        if ($block_payload['api_key_origin'] === 'global') {
-            $api_key = getGlobalApiKey();
-        } else {
-            $api_key = getCustomApiKey($block);
-
-            // Use custom chat model if own api key and model not empty
-            if (!empty($block_payload['custom_chat_model'])) {
-                $chat_model = $block_payload['custom_chat_model'];
-            }
-        }
-
-        if (empty($api_key)) {
-            throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Bitte geben Sie im Block einen API-Key an.'));
-        }
-
-        // Send request to OpenAI
-        $ch = curl_init('https://api.openai.com/v1/chat/completions');
-
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type: application/json",
-            "Authorization: Bearer {$api_key}"
-        ]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $post_body = json_encode([
-            'model' => $chat_model,
-            'messages' => [
-                [
-                    'role' => 'user',
-                    'content' => $prompt,
-                ],
-            ],
-            'max_tokens' => 500,
-            'temperature' => 0.9,
-            'top_p' => 1,
-            'frequency_penalty' => 0,
-            'presence_penalty' => 0,
-        ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
-
-        $response = curl_exec($ch);
-        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        $error = curl_error($ch);
-        curl_close($ch);
-        if ($error || $http_code >= 400) {
-            $error_response = json_decode($response, true);
-
-            $error_msg = dgettext('CoursewareGPTBlock', "OpenAI-API-Fehler: {$error_response['error']['message']}.");
-            if ($error_response['error']['code'] === 'invalid_api_key') {
-                $error_msg = dgettext('CoursewareGPTBlock', 'Der OpenAI-API-Key ist fehlerhaft.');
-            }
-            if ($error_response['error']['code'] === 'model_not_found') {
-                $error_msg = dgettext('CoursewareGPTBlock', 'Das OpenAI-Model konnte nicht gefunden werden.');
-            }
-            throw new Trails_Exception(500, $error_msg);
-        }
-
-        return json_decode($response, true);
-    }
-
     public function user_feedback_action($block_id)
     {
         $user_feedback_id = Request::get('user_feedback_id');

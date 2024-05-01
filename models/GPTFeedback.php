@@ -2,6 +2,10 @@
 
 namespace CoursewareGPTBlock;
 
+require_once 'vendor/exTpl/Template.php';
+
+use exTpl\Template;
+
 /**
  * Generated feedback to a user's answer
  *
@@ -32,5 +36,35 @@ class GPTFeedback extends \SimpleORMap
         ];
 
         parent::configure($config);
+    }
+
+    public static function generateFeedback(\Courseware\Block $block, GPTQuestion $question, GPTUserAnswer $answer): GPTFeedback
+    {
+        $click_date = time();
+
+        $block_payload = json_decode($block->payload, true);
+        $language = $block_payload['language'];
+
+        Template::setTagMarkers('{{', '}}');
+        $feedback_prompt = \Config::get()->getValue('COURSEWARE_GPT_FEEDBACK_PROMPT')->localized($language);
+        $template = new Template($feedback_prompt);
+        $generate_feedback_prompt = $template->render([
+            'question' => $question->question,
+            'answer' => $answer->answer,
+            'solution' => $question->solution,
+        ]);
+
+        // Send request to OpenAI
+        $data = sendPrompt($generate_feedback_prompt, $block, $block_payload);
+
+        // Process OpenAi response
+        $feedback = $data['choices'][0]['message']['content'];
+
+        // Store feedback
+        return \CoursewareGPTBlock\GPTFeedback::create([
+            'answer_id'  => $answer->id,
+            'feedback'   => $feedback,
+            'click_date' => $click_date,
+        ]);
     }
 }
