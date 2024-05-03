@@ -39,10 +39,7 @@
             "enum": [5, 10, 15]
         },
         "block_questions": {
-            "type": "array",
-            "items": {
-                "type": "object"
-            }
+            "type": "array"
         }
     },
     "required": ["api_key_origin", "summary"],
