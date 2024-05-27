@@ -88,6 +88,7 @@ class GPTBlock extends BlockType
     public function setPayload($payload): void
     {
         $payload_old = json_decode($this->block->payload, true);
+        $block_questions = $payload['block_questions'];
 
         // Store custom api key
         if ($payload['api_key_origin'] === 'custom' && !empty($payload['custom_api_key'])) {
@@ -100,21 +101,22 @@ class GPTBlock extends BlockType
             GPTQuestion::deleteQuestions($this->block->id);
         }
 
+        // Store payload before generating questions
+        unset($payload['custom_api_key']);
+        unset($payload['block_questions']);
+
+        parent::setPayload($payload);
+
         // Handle question pool
         if ($payload['question_mode'] === 'pool') {
-            if (empty($payload['block_questions'])) {
+            if (empty($block_questions)) {
                 // Initialize question pool if empty
                 GPTQuestion::deleteQuestions($this->block->id);  // Ensure block has no questions
                 GPTQuestion::generateQuestions($this->block, $payload['difficulty'], $payload['question_count']);
             } else {
                 // Store edited questions in database
-                GPTQuestion::setQuestions($this->block->id, $payload['block_questions']);
+                GPTQuestion::setQuestions($this->block->id, $block_questions);
             }
         }
-
-        unset($payload['custom_api_key']);
-        unset($payload['block_questions']);
-
-        parent::setPayload($payload);
     }
 }
