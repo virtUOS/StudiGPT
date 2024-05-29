@@ -91,6 +91,7 @@ const CoursewareGPTBlock= {
                                     {{ _('Feedback') }}
                                 </div>
                                 {{ feedback.content }}
+                                <!--
                                 <div class="cw-gpt-user-feedback">
                                     <div @click="submitUserFeedback('feedback', 1)"
                                          class="cw-gpt-user-feedback-like"
@@ -101,6 +102,7 @@ const CoursewareGPTBlock= {
                                          :class="{ selected: userFeedbackFeedback?.value === 0 }"
                                     />
                                 </div>
+                                -->
                             </div>
                             <div v-show="showSolution" class="cw-gpt-section cw-gpt-section-solution">
                                 <div class="cw-gpt-section-heading">
