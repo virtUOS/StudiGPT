@@ -114,7 +114,7 @@ class GPTBlock extends BlockType
                 GPTQuestion::deleteQuestions($this->block->id);  // Ensure block has no questions
                 GPTQuestion::generateQuestions($this->block, $payload['difficulty'], $payload['question_count']);
             } else {
-                // Store edited questions in database
+                // Update questions in database
                 GPTQuestion::setQuestions($this->block->id, $block_questions);
             }
         }

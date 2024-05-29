@@ -322,7 +322,7 @@ const CoursewareGPTBlock= {
                                         v-if="showEditDialog"
                                         :title="_('Frage bearbeiten')"
                                         :close-text="_('Schließen')"
-                                        :confirm-text="_('Bestätigen')"
+                                        :confirm-text="_('Speichern')"
                                         confirmClass="accept"
                                         closeClass="cancel"
                                         height="600"
@@ -682,15 +682,43 @@ const CoursewareGPTBlock= {
             this.showEditDialog = true;
         },
         updateQuestion() {
-            this.currentBlockQuestions[this.editedQuestionIndex] = this.editedQuestion;
+            const formData = new FormData();
+            formData.append('question', JSON.stringify(this.editedQuestion));
 
-            this.editedQuestionIndex = -1;
-            this.editedQuestion = null;
-            this.showEditDialog = false;
+            return this.$store.getters.httpClient
+                .post(
+                    COURSEWARE_GPT_BLOCK_BASE_URL + '/api/update_question/' + this.editedQuestion.id, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    }
+                )
+                .then(() => {
+                    this.currentBlockQuestions[this.editedQuestionIndex] = this.editedQuestion;
+                })
+                .catch(() => {
+                    this.$store.dispatch('companionError', {
+                        info: this._("Die Frage konnte nicht bearbeitet werden.")
+                    });
+                })
+                .finally(() => {
+                    this.editedQuestionIndex = -1;
+                    this.editedQuestion = null;
+                    this.showEditDialog = false;
+                });
         },
         deleteQuestion(questionIndex) {
             if (confirm(this._('Möchten Sie die Frage wirklich löschen?'))) {
-                this.currentBlockQuestions.splice(questionIndex, 1);
+                return this.$store.getters.httpClient
+                    .post(COURSEWARE_GPT_BLOCK_BASE_URL + '/api/delete_question/' + this.currentBlockQuestions[questionIndex].id)
+                    .then(() => {
+                        this.currentBlockQuestions.splice(questionIndex, 1);
+                    })
+                    .catch(() => {
+                        this.$store.dispatch('companionError', {
+                            info: this._("Die Frage konnte nicht gelöscht werden.")
+                        });
+                    });
             }
         },
         storeBlock() {
