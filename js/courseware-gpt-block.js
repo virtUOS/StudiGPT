@@ -250,7 +250,7 @@ const CoursewareGPTBlock= {
                             </component>
                             <component
                                 :is="coursewarePluginComponents.CoursewareTab"
-                                :name="_('Fragen')"
+                                :name="_('Fragenpool')"
                                 :index="1"
                             >
                                 <!-- Questions view -->
