@@ -144,6 +144,57 @@ class ApiController extends PluginController
     }
 
     /**
+     * Updates question in pool of block
+     *
+     * @param $question_id
+     * @return void
+     * @throws AccessDeniedException
+     */
+    public function update_question_action($question_id) {
+        $question = \CoursewareGPTBlock\GPTQuestion::find($question_id);
+        $block = \Courseware\Block::find($question->block_id);
+        $structural_element = $block->container->getStructuralElement();
+        $user = \User::findCurrent();
+
+        // Check permissions
+        if (!$structural_element->canEdit($user)) {
+            throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
+        }
+
+        $question_data = json_decode(Request::get('question'), true);
+
+        $question->question = $question_data['question'];
+        $question->solution = $question_data['solution'];
+        $question->difficulty = $question_data['difficulty'];
+        $question->store();
+
+        $this->render_nothing();
+    }
+
+    /**
+     * Deletes question in pool of block
+     *
+     * @param $question_id
+     * @return void
+     * @throws AccessDeniedException
+     */
+    public function delete_question_action($question_id) {
+        $question = \CoursewareGPTBlock\GPTQuestion::find($question_id);
+        $block = \Courseware\Block::find($question->block_id);
+        $structural_element = $block->container->getStructuralElement();
+        $user = \User::findCurrent();
+
+        // Check permissions
+        if (!$structural_element->canEdit($user)) {
+            throw new AccessDeniedException(dgettext('CoursewareGPTBlock', 'Sie verfügen nicht über die notwendigen Rechte für diese Aktion.'));
+        }
+
+        $question->delete();
+
+        $this->render_nothing();
+    }
+
+    /**
      * Exports gpt block statistics as JSON
      */
     /*
