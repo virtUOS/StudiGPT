@@ -9,7 +9,7 @@
     resize: both;
 }
 
-.cw-gpt-question-pool-table {
+.cw-gpt-question-pool-table .cw-gpt-wrap {
     hyphens: auto;
     overflow-wrap: anywhere;
 }

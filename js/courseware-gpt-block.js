@@ -265,6 +265,7 @@ const CoursewareGPTBlock= {
                                         -->
                                         <thead>
                                         <tr>
+                                            <th>{{ _('#') }}</th>
                                             <th>{{ _('Frage') }}</th>
                                             <th>{{ _('Musterlösung') }}</th>
                                             <th style="width: 100px">{{ _('Schwierigkeit') }}</th>
@@ -275,8 +276,9 @@ const CoursewareGPTBlock= {
                                         </thead>
                                         <tbody>
                                         <tr v-for="(question, index) in currentBlockQuestions" :key="question.id">
-                                            <td>{{ question.question }}</td>
-                                            <td>{{ question.solution }}</td>
+                                            <td>{{ index + 1 }}.</td>
+                                            <td class="cw-gpt-wrap">{{ question.question }}</td>
+                                            <td class="cw-gpt-wrap">{{ question.solution }}</td>
                                             <td>{{ difficulties[question.difficulty] }}</td>
                                             <td>{{ question.likes ?? 0 }}</td>
                                             <td>{{ question.dislikes ?? 0 }}</td>
@@ -290,14 +292,14 @@ const CoursewareGPTBlock= {
                                             </td>
                                         </tr>
                                         <tr v-show="!currentBlockQuestions.length">
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 {{ _('Es sind keine Fragen vorhanden. Wenn Sie den Block speichern, werden initiale Fragen erstellt.') }}
                                             </td>
                                         </tr>
                                         </tbody>
                                         <tfoot>
                                         <tr>
-                                            <td colspan="6">
+                                            <td colspan="7">
                                                 <div>
                                                     <select v-model="currentDifficulty">
                                                         <option
