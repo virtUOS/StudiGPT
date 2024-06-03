@@ -158,7 +158,7 @@ class GPTQuestion extends \SimpleORMap
      */
     public static function getQuestions(string $block_id): array
     {
-        return static::findBySQL('block_id = ?', [$block_id]);
+        return static::findBySQL('block_id = ? ORDER BY mkdate ASC', [$block_id]);
     }
 
     /**
