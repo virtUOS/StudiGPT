@@ -9,6 +9,11 @@
     resize: both;
 }
 
+.cw-gpt-question-pool-table {
+    hyphens: auto;
+    overflow-wrap: anywhere;
+}
+
 .cw-gpt-privacy {
     border: solid 1px #d0d7e3;
     padding: 0;
