@@ -257,7 +257,7 @@ const CoursewareGPTBlock= {
                             >
                                 <!-- Questions view -->
                                 <div v-if="blockQuestions && blockQuestions.length > 0 && currentQuestionMode === 'pool'">
-                                    <table class="default">
+                                    <table class="default cw-gpt-question-pool-table">
                                         <!-- 
                                         <caption>
                                             {{ _('Fragenpool') }}
