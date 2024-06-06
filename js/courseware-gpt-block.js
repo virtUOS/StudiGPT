@@ -166,7 +166,7 @@ const CoursewareGPTBlock= {
                                     </label>
                                     <div v-show="!globalApiKeySelected">
                                         <label>
-                                            {{ _('Eigener OpenAI-API-Key') }}
+                                            <span :class="{ required: !hasCustomApiKey }">{{ _('Eigener OpenAI-API-Key') }}</span>
                                             <studip-tooltip-icon 
                                                 :text="_('Geben Sie Ihren eigenen API-Key an. Einen API-Key können Sie in den Accounteinstellungen der OpenAI-Webseite erstellen. Um diese Einstellungen sehen zu können, müssen Sie sich in Ihr OpenAI-Konto anmelden oder sich registrieren.')"/>
                                             <input type="password" :placeholder="customApiKeyPlaceholder" 
@@ -208,7 +208,7 @@ const CoursewareGPTBlock= {
                                         <textarea v-model="textBlockSummary" maxlength="16000" disabled/>
                                     </label>
                                     <label v-show="!currentUseBlockContents">
-                                        {{ _('Inhalt der Veranstaltung') }}
+                                        <span class="required">{{ _('Inhalt der Veranstaltung') }}</span>
                                         <textarea v-model="currentSummary" maxlength="16000"/>
                                     </label>
                                     <label>
@@ -741,7 +741,7 @@ const CoursewareGPTBlock= {
 
             if (!this.currentUseBlockContents && this.currentSummary === '') {
                 this.$store.dispatch('companionWarning', {
-                    info: this._('Bitte stellen Sie den Inhalt der Veranstaltung bereit.')
+                    info: this._('Bitte stellen Sie im Eingabefeld den Inhalt der Veranstaltung bereit, zu dem die Fragen generiert werden sollen.')
                 });
                 return false;
             }

@@ -56,7 +56,7 @@
     "Feedback konnte nicht erzeugt werden.": "Feedback could not be generated.",
     "Feedback konnte nicht gespeichert werden.": "Feedback could not be saved.",
     "Bitte stellen Sie Ihren OpenAI-API-Key bereit.": "Please provide your OpenAI API key.",
-    "Bitte stellen Sie den Inhalt der Veranstaltung bereit.": "Please provide the content of the lecture.",
+    "Bitte stellen Sie im Eingabefeld den Inhalt der Veranstaltung bereit, zu dem die Fragen generiert werden sollen.": "Please provide the content of the lecture for which the questions should be generated in the input field.",
     "Zusätzliche Anweisungen": "Additional Instructions",
     "Hier können Sie dem Model zusätzliche Informationen mitgeben, wie beispielsweise einen Fokus auf einen bestimmten Teil des Lerninhalts oder eine Anweisung.": "Here you can give the model additional information, such as a focus on a specific part of the learning content or an instruction.",
     "Wenn Sie das Verfahren zur Generierung der Fragen ändern, werden die vorhandenen Fragen und Antworten gelöscht. Möchten Sie damit fortfahren?": "If you change the question generation mode, the existing questions and answers will be deleted. Would you like to continue?"
