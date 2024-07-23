@@ -17,6 +17,16 @@ function sendPrompt(string $prompt, \Courseware\Block $block, array $block_paylo
     $range_id = $block->container->getStructuralElement()->range_id;
     $api_key_origin = $block_payload['api_key_origin'];
 
+    // Get endpoint
+    $endpoint = \CoursewareGPTBlock\GPTClient::getGlobalApiEndpoint();
+    if ($api_key_origin === 'custom') {
+        // Use custom endpoint if own api key and endpoint not empty
+        if (!empty($block_payload['custom_endpoint'])) {
+            $endpoint = $block_payload['custom_endpoint'];
+        }
+    }
+
+    // Get chat model
     $chat_model = \CoursewareGPTBlock\GPTClient::getGlobalChatModel();
     if ($api_key_origin === 'custom') {
         // Use custom chat model if own api key and model not empty
@@ -25,7 +35,7 @@ function sendPrompt(string $prompt, \Courseware\Block $block, array $block_paylo
         }
     }
 
-    return $client->request($prompt, $api_key_origin, $range_id, $chat_model);
+    return $client->request($prompt, $api_key_origin, $range_id, $endpoint, $chat_model);
 }
 
 /**

@@ -71,6 +71,7 @@ class GPTBlock extends BlockType
 
         $payload['has_global_api_key'] = GPTClient::hasGlobalApiKey();
         $payload['has_custom_api_key'] = GPTClient::hasCustomApiKey($structural_element->range_id);
+        $payload['global_endpoint'] = GPTClient::getGlobalApiEndpoint();
         $payload['global_chat_model'] = GPTClient::getGlobalChatModel();
         $payload['text_block_summary'] = getCoursewareSummary($this->block);
 

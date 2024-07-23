@@ -3,15 +3,12 @@
 namespace CoursewareGPTBlock;
 
 class OpenaiClient extends GPTClient {
-
-    protected $api_url = 'https://api.openai.com/v1/chat/completions';
-
     protected $temperature = 0.9;
     protected $top_p = 1;
     protected $frequency_penalty = 0;
     protected $presence_penalty = 0;
 
-    public function request(string $prompt, string $api_key_origin, string $range_id, string $chat_model)
+    public function request(string $prompt, string $api_key_origin, string $range_id, string $endpoint, string $chat_model)
     {
         $api_key = $this->getApiKey($api_key_origin, $range_id);
 
@@ -20,7 +17,7 @@ class OpenaiClient extends GPTClient {
         }
 
         // Send request to OpenAI
-        $ch = curl_init($this->api_url);
+        $ch = curl_init($endpoint);
 
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -53,12 +50,19 @@ class OpenaiClient extends GPTClient {
         if ($error || $http_code >= 400) {
             $error_response = json_decode($response, true);
 
-            $error_msg = dgettext('CoursewareGPTBlock', "OpenAI-API-Fehler: {$error_response['error']['message']}.");
-            if ($error_response['error']['code'] === 'invalid_api_key') {
-                $error_msg = dgettext('CoursewareGPTBlock', 'Der OpenAI-API-Key ist fehlerhaft.');
-            }
-            if ($error_response['error']['code'] === 'model_not_found') {
-                $error_msg = dgettext('CoursewareGPTBlock', 'Das OpenAI-Model konnte nicht gefunden werden.');
+            if ($error_response && $error_response['error']) {
+                // OpenAI-Error message handling
+                $error_msg = dgettext('CoursewareGPTBlock', "OpenAI-API-Fehler: {$error_response['error']['message']}.");
+                if ($error_response['error']['code'] === 'invalid_api_key') {
+                    $error_msg = dgettext('CoursewareGPTBlock', 'Der OpenAI-API-Key ist fehlerhaft.');
+                }
+                if ($error_response['error']['code'] === 'model_not_found') {
+                    $error_msg = dgettext('CoursewareGPTBlock', 'Das OpenAI-Model konnte nicht gefunden werden.');
+                }
+            } else {
+                // Remove new lines
+                $response = str_replace(PHP_EOL, ' ', $response);
+                $error_msg = dgettext('CoursewareGPTBlock', "OpenAI-API-Fehler: $response.");
             }
 
             throw new \Trails_Exception(500, $error_msg);
