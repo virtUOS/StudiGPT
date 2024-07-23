@@ -166,16 +166,23 @@ const CoursewareGPTBlock= {
                                     </label>
                                     <div v-show="!globalApiKeySelected">
                                         <label>
-                                            <span :class="{ required: !hasCustomApiKey }">{{ _('Eigener OpenAI-API-Key') }}</span>
+                                            <span :class="{ required: !hasCustomApiKey }">{{ _('Eigener API-Key') }}</span>
                                             <studip-tooltip-icon 
                                                 :text="_('Geben Sie Ihren eigenen API-Key an. Einen API-Key können Sie in den Accounteinstellungen der OpenAI-Webseite erstellen. Um diese Einstellungen sehen zu können, müssen Sie sich in Ihr OpenAI-Konto anmelden oder sich registrieren.')"/>
                                             <input type="password" :placeholder="customApiKeyPlaceholder" 
                                                 v-model="customApiKey"/>
                                         </label>
                                         <label>
+                                            {{ _('OpenAI-Endpunkt') }}
+                                            <studip-tooltip-icon
+                                                :text="_('Sie können zu Ihrem API-Key den zu verwendenden OpenAI-Endpunkt angeben. Der Endpunkt muss mit der Chat Completions API von OpenAI kompatibel sein. Wenn Sie keinen Endpunkt angeben, wird der in Stud.IP zentral konfigurierte Endpunkt verwendet.')"/>
+                                            <input type="text" :placeholder="globalEndpoint"
+                                                   v-model="currentCustomEndpoint"/>
+                                        </label>
+                                        <label>
                                             {{ _('OpenAI-Chat-Model') }}
                                             <studip-tooltip-icon
-                                                :text="_('Sie können zu Ihrem API-Key das zu verwendende OpenAI-Chat-Model angeben. Das Model muss mit der Chat Completions API von OpenAI kompatibel sein. Wenn Sie kein Model angeben, wird das in Stud.IP zentral konfigurierte Model verwendet.')"/>
+                                                :text="_('Sie können zu Ihrem API-Key das zu verwendende OpenAI-Chat-Model angeben. Dieses Model muss mit dem OpenAI-Endpunkt kompatibel sein. Wenn Sie kein Model angeben, wird das in Stud.IP zentral konfigurierte Model verwendet.')"/>
                                             <input type="text" :placeholder="globalChatModel"
                                                 v-model="currentCustomChatModel"/>
                                         </label>
@@ -391,6 +398,7 @@ const CoursewareGPTBlock= {
             currentUseBlockContents: false,
             currentApiKeyOrigin: 'global',
             customApiKey: '',
+            currentCustomEndpoint: '',
             currentCustomChatModel: '',
             currentBlockQuestions: [],
             menuItems: [
@@ -435,6 +443,12 @@ const CoursewareGPTBlock= {
         },
         hasCustomApiKey() {
             return this.block?.attributes?.payload?.has_custom_api_key;
+        },
+        globalEndpoint() {
+            return this.block?.attributes?.payload?.global_endpoint;
+        },
+        customApiEndpoint() {
+            return this.block?.attributes?.payload?.custom_endpoint;
         },
         globalChatModel() {
             return this.block?.attributes?.payload?.global_chat_model;
@@ -668,6 +682,7 @@ const CoursewareGPTBlock= {
         initCurrentData() {
             this.currentTitle = this.title ?? this.currentTitle;
             this.currentApiKeyOrigin = this.hasGlobalApiKey ? this.apiKeyOrigin : 'custom';
+            this.currentCustomEndpoint = this.customApiEndpoint ?? this.currentCustomEndpoint;
             this.currentCustomChatModel = this.customChatModel ?? this.currentCustomChatModel;
             this.currentSummary = this.summary ?? this.currentSummary;
             this.currentAdditionalInstructions = this.additionalInstructions ?? this.currentAdditionalInstructions;
@@ -770,6 +785,7 @@ const CoursewareGPTBlock= {
             if (!this.globalApiKeySelected) {
                 payload.custom_api_key = this.customApiKey;
                 payload.custom_chat_model = this.currentCustomChatModel;
+                payload.custom_endpoint = this.currentCustomEndpoint;
             }
 
             // Block will be destroyed/reloaded after update
