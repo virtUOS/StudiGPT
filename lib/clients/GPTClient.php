@@ -6,8 +6,6 @@ abstract class GPTClient
 {
     private static $instance;
 
-    protected $api_url;
-
     /**
      * Get singleton instance of client
      *
@@ -35,9 +33,9 @@ abstract class GPTClient
     protected function getApiKey(string $api_key_origin, string $range_id)
     {
         if ($api_key_origin === 'global') {
-            return $this->getGlobalApiKey();
+            return self::getGlobalApiKey();
         } else {
-            return $this->getCustomApiKey($range_id);
+            return self::getCustomApiKey($range_id);
         }
     }
 
@@ -97,6 +95,16 @@ abstract class GPTClient
     }
 
     /**
+     * Loads global api endpoint
+     *
+     * @return string API Endpoint
+     */
+    public static function getGlobalApiEndpoint(): ?string
+    {
+        return \Config::get()->getValue('COURSEWARE_GPT_ENDPOINT');
+    }
+
+    /**
      * Loads name of global chat model
      *
      * @return string global chat model
@@ -112,9 +120,10 @@ abstract class GPTClient
      * @param string $prompt LLM prompt
      * @param string $api_key_origin 'global' | 'custom'
      * @param string $range_id id of course or user context
+     * @param string $endpoint api endpoint
      * @param string $chat_model chat model
      *
      * @return mixed json decoded response
      */
-    public abstract function request(string $prompt, string $api_key_origin, string $range_id, string $chat_model);
+    public abstract function request(string $prompt, string $api_key_origin, string $range_id, string $endpoint, string $chat_model);
 }

@@ -126,7 +126,12 @@ class GPTQuestion extends \SimpleORMap
         // Process OpenAi response
         $text = $data['choices'][0]['message']['content'];
 
-        $generated_questions = json_decode($text);
+        // Extract json from text
+        if (!preg_match('/\[.*\]/xs', $text, $matches)) {
+            preg_match('/\{.*\}/xs', $text, $matches);
+        }
+
+        $generated_questions = json_decode($matches[0]);
         if (!is_array($generated_questions)) {
             // Ensure data is array
             $generated_questions = [$generated_questions];

@@ -27,6 +27,9 @@
         "custom_api_key": {
             "type": "string"
         },
+        "custom_endpoint": {
+            "type": "string"
+        },
         "custom_chat_model": {
             "type": "string"
         },
