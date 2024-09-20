@@ -1,7 +1,7 @@
 pluginname=StudiGPT
 pluginclassname=StudiGPT
 origin=virtUOS
-version=0.1.1
+version=0.1.2
 description=Courseware Block zur Erzeugung von Übungsaufgaben zu einer Courseware-Seite. Für die Generierung der Fragen und die Auswertung wird GPT verwendet.
 studipMinVersion=5.0
 studipMaxVersion=5.5.99
