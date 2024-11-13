@@ -190,7 +190,7 @@ const CoursewareGPTBlock= {
                                     <label>
                                         {{ _('Verfahren zur Generierung von Fragen') }}
                                         <studip-tooltip-icon
-                                            :text='_("Sie können zwischen zwei Verfahren zur Generierung von Fragen wählen. Beim Verfahren \\"Fragenpool\\" wird beim Speichern des Blocks eine Fragenkatalog erstellt, dessen Fragen nacheinander angezeigt wird. Bei der Option \\"Zufällig\\" werden die Fragen unter Verwendung des GPT-Models immer neu generiert.")'/>
+                                            :text='_("Sie können zwischen zwei Verfahren zur Generierung von Fragen wählen. Beim Verfahren \\"Fragenpool\\" wird beim Speichern des Blocks eine Fragenkatalog erstellt, dessen Fragen nacheinander angezeigt werden. Bei der Option \\"Zufällig\\" werden die Fragen unter Verwendung des GPT-Models immer neu generiert.")'/>
                                         <select v-model="currentQuestionMode">
                                             <option value="pool">{{ _('Fragenpool') }}</option>
                                             <option value="random">{{ _('Zufällig') }}</option>
