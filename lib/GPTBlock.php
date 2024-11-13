@@ -15,7 +15,7 @@ class GPTBlock extends BlockType
 
     public static function getTitle(): string
     {
-        return dgettext('CoursewareGPTBlock', 'StudiGPT (experimentell)');
+        return dgettext('CoursewareGPTBlock', 'StudiGPT');
     }
 
     public static function getDescription(): string
