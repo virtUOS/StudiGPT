@@ -3,6 +3,8 @@
 class InitPlugin extends Migration {
     public function up()
     {
+        // TODO: Check if old studigpt is installed
+
         $cfg = Config::get();
 
         $cfg->create('COURSEWARE_GPT_QUESTION_PROMPT',

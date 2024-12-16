@@ -1,4 +1,4 @@
-const TRANSLATION = await $.getJSON(`${STUDIP.ABSOLUTE_URI_STUDIP}plugins_packages/virtUOS/StudiGPT/locale/en/LC_MESSAGES/CoursewareGPTBlock.json`);
+const TRANSLATION = await $.getJSON(`${STUDIP.ABSOLUTE_URI_STUDIP}plugins_packages/virtUOS/KIQuiz/locale/en/LC_MESSAGES/CoursewareGPTBlock.json`);
 
 const CoursewareGPTBlock= {
     template:
@@ -374,7 +374,7 @@ const CoursewareGPTBlock= {
                     <div v-show="loading" class="cw-gpt-loading-indicator"></div>
                 </template>
                 <template #info>
-                    <p>{{ _('Informationen zum StudiGPT-Block') }}</p>
+                    <p>{{ _('Informationen zum KI-Quiz-Block') }}</p>
                 </template>
             </component>
             </div>`,
