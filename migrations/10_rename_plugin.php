@@ -81,6 +81,13 @@ class RenamePlugin extends Migration
 
     public function down()
     {
-        // No way back to old name
+        $db = DBManager::get();
+        $studigpt_installed = $db->fetchColumn("SELECT 1 FROM schema_version WHERE domain = 'StudiGPT' AND version > 0");
+        $kiquiz_installed = $db->fetchColumn("SELECT 1 FROM schema_version WHERE domain = 'KI-Quiz'");
+
+        // Prevent down migration if old and new plugins are installed
+        if ($studigpt_installed && $kiquiz_installed) {
+            throw new Exception('Could not down migrate this plugin because StudiGPT and KI-Quiz are installed and depend on each other. Please update KI-Quiz to a newer version (>= 0.2.1) and then remove StudiGPT.');
+        }
     }
 }
