@@ -26,24 +26,24 @@ class RenamePlugin extends Migration
             $config->store();
         }
 
-        $db = DBManager::get();
-
-        // Rename old plugin
-        $db->exec("REPLACE INTO plugins (pluginclassname, pluginpath, pluginname, plugintype, enabled) 
-            SELECT 'KIQuiz' AS pluginclassname, 'virtUOS/KIQuiz' AS pluginpath, 'KI-Quiz' AS pluginname, plugintype, enabled
-            FROM plugins WHERE pluginname = 'StudiGPT'
-        ");
-
-        // Move plugin schema
-        $db->exec("UPDATE schema_version
-            SET domain = 'KI-Quiz', version = version + 1
-            WHERE domain = 'StudiGPT'
-        ");
-
-        // Copy plugin directory
         $studigpt_dir = __DIR__ . '/../../StudiGPT';
         $kiquiz_dir = __DIR__ . '/../../KIQuiz';
         if (is_dir($studigpt_dir) && !is_dir($kiquiz_dir)) {
+            $db = DBManager::get();
+
+            // Rename old plugin
+            $db->exec("REPLACE INTO plugins (pluginclassname, pluginpath, pluginname, plugintype, enabled) 
+                SELECT 'KIQuiz' AS pluginclassname, 'virtUOS/KIQuiz' AS pluginpath, 'KI-Quiz' AS pluginname, plugintype, enabled
+                FROM plugins WHERE pluginname = 'StudiGPT'
+            ");
+
+            // Move plugin schema
+            $db->exec("UPDATE schema_version
+                SET domain = 'KI-Quiz', version = version + 1
+                WHERE domain = 'StudiGPT'
+            ");
+
+            // Copy plugin directory
             $this->recurseCopy($studigpt_dir, $kiquiz_dir);
 
             // Alter manifest in new plugin
@@ -52,10 +52,10 @@ class RenamePlugin extends Migration
             $manifest = preg_replace('/^pluginname=.*$/m', 'pluginname=KI-Quiz', $manifest);
             $manifest = preg_replace('/^pluginclassname=.*$/m', 'pluginclassname=KIQuiz', $manifest);
             file_put_contents($manifest_dir, $manifest);
-        }
 
-        // Disable old plugin
-        $db->exec("UPDATE plugins SET enabled = 'no' WHERE pluginclassname = 'StudiGPT'");
+            // Disable old plugin
+            $db->exec("UPDATE plugins SET enabled = 'no' WHERE pluginclassname = 'StudiGPT'");
+        }
     }
 
     function recurseCopy($source, $dest)
