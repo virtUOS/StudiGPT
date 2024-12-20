@@ -1,4 +1,5 @@
-# StudiGPT
+# StudiGPT (deprecated)
+**Deprecated: This plugin has been renamed to KI-Quiz: https://github.com/virtUOS/KI-Quiz**
 
 Courseware-Block zur Generierung von Fragen und Feedback zu Antworten basierend auf dem Inhalt einer Courseware-Seite. Derzeit wird das große Sprachmodell GPT-3 von openAI für die Generierung der Fragen und die Auswertung verwendet.
 
