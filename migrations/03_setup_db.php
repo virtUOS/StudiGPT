@@ -4,7 +4,7 @@ class SetupDb extends Migration
 {
     function description()
     {
-        return 'initial database setup for studiGPT plugin';
+        return 'initial database setup for KI-Quiz plugin';
     }
 
     function up()

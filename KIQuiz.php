@@ -14,7 +14,7 @@ StudipAutoloader::addClassLookups([
 
 use Courseware\CoursewarePlugin;
 
-class StudiGPT extends StudIPPlugin implements SystemPlugin, CoursewarePlugin
+class KIQuiz extends StudIPPlugin implements SystemPlugin, CoursewarePlugin
 {
     public function __construct()
     {
