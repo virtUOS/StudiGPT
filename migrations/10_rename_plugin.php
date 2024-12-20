@@ -31,7 +31,7 @@ class RenamePlugin extends Migration
         // Rename old plugin
         $db->exec("REPLACE INTO plugins (pluginclassname, pluginpath, pluginname, plugintype, enabled) 
             SELECT 'KIQuiz' AS pluginclassname, 'virtUOS/KIQuiz' AS pluginpath, 'KI-Quiz' AS pluginname, plugintype, enabled
-            FROM studip.plugins WHERE pluginname = 'StudiGPT'
+            FROM plugins WHERE pluginname = 'StudiGPT'
         ");
 
         // Move plugin schema
@@ -85,7 +85,7 @@ class RenamePlugin extends Migration
     {
         $db = DBManager::get();
         $studigpt_installed = $db->fetchColumn("SELECT 1 FROM schema_version WHERE domain = 'StudiGPT' AND version > 0");
-        $kiquiz_installed = $db->fetchColumn("SELECT 1 FROM schema_version WHERE domain = 'KI-Quiz'");
+        $kiquiz_installed = $db->fetchColumn("SELECT 1 FROM schema_version WHERE domain = 'KI-Quiz' AND version > 0");
 
         // Prevent down migration if old and new plugins are installed
         if ($studigpt_installed && $kiquiz_installed) {
