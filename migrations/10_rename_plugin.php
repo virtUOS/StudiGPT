@@ -41,16 +41,18 @@ class RenamePlugin extends Migration
         ");
 
         // Copy plugin directory
-        $current_dir = __DIR__ . '/../../StudiGPT';
-        $new_dir = __DIR__ . '/../../KIQuiz';
-        $this->recurseCopy($current_dir, $new_dir);
+        $studigpt_dir = __DIR__ . '/../../StudiGPT';
+        $kiquiz_dir = __DIR__ . '/../../KIQuiz';
+        if (is_dir($studigpt_dir) && !is_dir($kiquiz_dir)) {
+            $this->recurseCopy($studigpt_dir, $kiquiz_dir);
 
-        // Alter manifest in new plugin
-        $manifest_dir = $new_dir . '/plugin.manifest';
-        $manifest = file_get_contents($manifest_dir);
-        $manifest = preg_replace('/^pluginname=.*$/m', 'pluginname=KI-Quiz', $manifest);
-        $manifest = preg_replace('/^pluginclassname=.*$/m', 'pluginclassname=KIQuiz', $manifest);
-        file_put_contents($manifest_dir, $manifest);
+            // Alter manifest in new plugin
+            $manifest_dir = $kiquiz_dir . '/plugin.manifest';
+            $manifest = file_get_contents($manifest_dir);
+            $manifest = preg_replace('/^pluginname=.*$/m', 'pluginname=KI-Quiz', $manifest);
+            $manifest = preg_replace('/^pluginclassname=.*$/m', 'pluginclassname=KIQuiz', $manifest);
+            file_put_contents($manifest_dir, $manifest);
+        }
 
         // Disable old plugin
         $db->exec("UPDATE plugins SET enabled = 'no' WHERE pluginclassname = 'StudiGPT'");
