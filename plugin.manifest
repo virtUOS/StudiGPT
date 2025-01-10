@@ -1,7 +1,8 @@
-pluginname=StudiGPT
-pluginclassname=StudiGPT
+pluginname=KI-Quiz
+pluginclassname=KIQuiz
 origin=virtUOS
-version=0.1.4
-description=Deprecated: This plugin has been renamed to KI-Quiz. Courseware Block zur Erzeugung von Übungsaufgaben zu einer Courseware-Seite. Für die Generierung der Fragen und die Auswertung wird GPT verwendet.
+version=0.2.0
+description=Courseware Block zur Erzeugung von Übungsaufgaben zu einer Courseware-Seite. Für die Generierung der Fragen und die Auswertung wird GPT verwendet.
 studipMinVersion=5.0
 studipMaxVersion=5.5.99
+dbscheme=install/install.sql

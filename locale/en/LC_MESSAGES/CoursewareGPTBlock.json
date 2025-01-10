@@ -52,7 +52,7 @@
     "Speichern": "Save",
     "Sie müssen den Block zuerst abspeichern, um hier die generierten Fragen sehen zu können. Zudem muss in den Einstellungen als Verfahren zur Generierung von Fragen die Option \"Fragenpool\" ausgewählt sein.": "You have to save the block first to be able to see the generated questions here. In addition, the \"Question Pool\" option must be selected in the settings as the question generation method.",
     "Im Pool sind keine Fragen vorhanden": "No questions are available in the pool",
-    "Informationen zum StudiGPT-Block": "Information about the StudiGPT block",
+    "Informationen zum KI-Quiz-Block": "Information about the KI-Quiz block",
     "Frage konnte nicht generiert werden.": "Question could not be generated.",
     "Fragen konnten nicht generiert werden.": "Questions could not be generated.",
     "Feedback konnte nicht erzeugt werden.": "Feedback could not be generated.",
